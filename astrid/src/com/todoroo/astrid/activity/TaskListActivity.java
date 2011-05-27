@@ -100,6 +100,15 @@ import com.todoroo.astrid.utility.Flags;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 import com.todoroo.astrid.widget.TasksWidget;
 
+import com.todoroo.astrid.asr.ASRService;
+import com.todoroo.astrid.demonstration.*;
+import android.content.ServiceConnection;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.ComponentName;
+import android.os.Binder;
+import android.os.IBinder;
+
 /**
  * Primary activity for the Bente application. Shows a list of upcoming
  * tasks and a user's coaches.
@@ -177,6 +186,27 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private final TaskListContextMenuExtensionLoader contextMenuExtensionLoader = new TaskListContextMenuExtensionLoader();
     private VoiceInputAssistant voiceInputAssistant;
 
+    private DemonstrationService mService;
+    private boolean mBound = false; // whether we are bound to a demonstration service
+
+    /** Defines callbacks for demonstration service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            DemonstrationService.DemonstrationBinder binder = (DemonstrationService.DemonstrationBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
     /* ======================================================================
      * ======================================================= initialization
      * ====================================================================== */
@@ -218,6 +248,14 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         onNewIntent(getIntent());
 
         Eula.showEula(this);
+
+        // XXX: start the ASR service
+        //Intent intent = new Intent(this, ASRService.class);
+        //startService(intent);
+
+        Intent intent = new Intent(this, DemonstrationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        
     }
 
     @Override
@@ -481,6 +519,14 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         unregisterReceiver(refreshReceiver);
         unregisterReceiver(syncActionReceiver);
         backgroundTimer.cancel();
+    }
+
+    @Override
+    protected void onDestroy() {
+      super.onDestroy();
+      // XXX: stop the ASR service
+      Intent intent = new Intent(this, ASRService.class);
+      stopService(intent);
     }
 
     /**
@@ -1101,4 +1147,5 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
         setUpTaskList();
     }
+
 }
