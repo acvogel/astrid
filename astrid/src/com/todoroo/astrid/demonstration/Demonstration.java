@@ -67,6 +67,11 @@ public class Demonstration { //implements Serializable {
     mMotionEvents.add(newMotionEvent);
   }
 
+  public void addKeyEvent(KeyEvent ev) {
+    KeyEvent newKeyEvent = new KeyEvent(ev);
+    mKeyEvents.add(newKeyEvent);
+  }
+
   // XXX DEPRECATED CODE -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   // XXX deprecated Parcel version XXX

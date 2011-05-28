@@ -27,6 +27,9 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.content.ServiceConnection;
+import android.os.Binder;
+import android.os.IBinder;
 
 /**
  * <p>
@@ -64,7 +67,7 @@ public class AccessibilityShim {
      *
      * @param decorView The view to which touch exploration will be added.
      */
-    public static void attachToView(View decorView) {
+    public static void attachToView(View decorView, IBinder binder) {
         final Context context = decorView.getContext();
 
         if (!isAccessibilityEnabled(context)) {
@@ -75,7 +78,7 @@ public class AccessibilityShim {
             return;
         }
 
-        final AccessibleFrameLayout frame = new AccessibleFrameLayout(decorView.getContext());
+        final AccessibleFrameLayout frame = new AccessibleFrameLayout(decorView.getContext(), binder);
         //frame.unserializeMotionEvents();
 
         if (decorView instanceof ViewGroup) {
@@ -133,10 +136,10 @@ public class AccessibilityShim {
      *
      * @param activity The activity to which touch exploration will be added.
      */
-    public static void attachToActivity(Activity activity) {
+    public static void attachToActivity(Activity activity, IBinder binder) {
         final View decorView = activity.getWindow().getDecorView();
 
-        attachToView(decorView);
+        attachToView(decorView, binder);
     }
 
     /**
@@ -147,7 +150,7 @@ public class AccessibilityShim {
     public static void attachToDialog(Dialog dialog) {
         final View decorView = dialog.getWindow().getDecorView();
 
-        attachToView(decorView);
+        attachToView(decorView, null);
     }
 
     private AccessibilityShim() {

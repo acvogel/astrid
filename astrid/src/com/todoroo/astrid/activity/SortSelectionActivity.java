@@ -11,6 +11,17 @@ import android.widget.RadioButton;
 import com.timsu.astrid.R;
 import com.todoroo.astrid.core.SortHelper;
 
+import com.todoroo.astrid.asr.ASRService;
+import com.todoroo.astrid.demonstration.*;
+import android.content.ServiceConnection;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.ComponentName;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import android.content.Context;
+
 /**
  * Shows the sort / hidden dialog
  *

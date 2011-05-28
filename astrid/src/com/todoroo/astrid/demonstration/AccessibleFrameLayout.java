@@ -21,13 +21,19 @@ package com.todoroo.astrid.demonstration;
 import android.app.Instrumentation;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Binder;
+import android.os.IBinder;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.view.GestureDetector;
@@ -78,6 +84,8 @@ public class AccessibleFrameLayout extends FrameLayout {
 
 
     Demonstration mDemonstration;
+    //ServiceConnection mDemonstrationConnection; // used for connecting to the demonstration service to dispatch events
+    IBinder mBinder;
 
     private File mTouchFile;
     private FileOutputStream mTouchStream;
@@ -88,7 +96,8 @@ public class AccessibleFrameLayout extends FrameLayout {
     // private static final long[] mFocusGainedPattern = new long[] { 0, 50 };
     private static final long[] mFocusLostPattern = new long[] { 0, 15 };
 
-    public AccessibleFrameLayout(Context context) {
+    //public AccessibleFrameLayout(Context context, ServiceConnection demonstrationConnection) {
+    public AccessibleFrameLayout(Context context, IBinder binder) {
         super(context);
 
         mHandler = new Handler();
@@ -135,19 +144,24 @@ public class AccessibleFrameLayout extends FrameLayout {
         mCompatibilityMode = compatibilityMode;
 
 
-       mDemonstration = new Demonstration();
+        mDemonstration = new Demonstration();
 
-       try {
-         mExternalDir = context.getExternalFilesDir(null);
-       } catch(Exception e) {
-         Log.e(LOG_STRING, "Error getting external dir: " + e.toString());
-       }
+        try {
+          mExternalDir = context.getExternalFilesDir(null);
+        } catch(Exception e) {
+          Log.e(LOG_STRING, "Error getting external dir: " + e.toString());
+        }
+        Log.i(LOG_STRING, "Assigning binder");
+        if(binder == null) {
+          Log.e(LOG_STRING, "Null binder in constructor");
+        }
+        mBinder = binder; 
 
-       //unserializeDemonstration();
-       //unserializeMotionEvents();
-       //setOnClickListener(mCorkyListener);
-       //setOnTouchListener(mTouchListener);
-       //clearSerialization();
+        //unserializeDemonstration();
+        //unserializeMotionEvents();
+        //setOnClickListener(mCorkyListener);
+        //setOnTouchListener(mTouchListener);
+        //clearSerialization();
     }
 
     /*
@@ -417,7 +431,18 @@ public class AccessibleFrameLayout extends FrameLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Log.i(LOG_STRING,"touch event: " + ev.toString());
-        mDemonstration.addMotionEvent(ev);
+        //mDemonstration.addMotionEvent(ev);
+        Parcel parcel = Parcel.obtain();
+        parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        // add motionevent to parcel
+        try {
+          if(mBinder == null) {
+            Log.e(LOG_STRING, "Null binder!"); 
+          }
+          mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch (RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
 
         if (mExplorationEnabled) {
             int pointers = ev.getPointerCount();

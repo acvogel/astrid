@@ -108,6 +108,7 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * Primary activity for the Bente application. Shows a list of upcoming
@@ -149,6 +150,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
     /** token for passing a {@link Filter} object through extras */
     public static final String TOKEN_FILTER = "filter"; //$NON-NLS-1$
+    public static final String LOG_STRING = "TaskListActivity";
 
     // --- instance variables
 
@@ -187,6 +189,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private VoiceInputAssistant voiceInputAssistant;
 
     private DemonstrationService mService;
+    private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
@@ -196,8 +199,10 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         public void onServiceConnected(ComponentName className,
                 IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            DemonstrationService.DemonstrationBinder binder = (DemonstrationService.DemonstrationBinder) service;
-            mService = binder.getService();
+            Log.i(LOG_STRING, "onServiceConnect()from ServiceConnection.");
+            mBinder = (DemonstrationService.DemonstrationBinder) service;
+            mService = mBinder.getService();
+            attachShim(); // now that we have the binder, fire up the shim.
             mBound = true;
         }
 
@@ -206,6 +211,10 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
             mBound = false;
         }
     };
+
+    protected void attachShim() {
+      AccessibilityShim.attachToActivity(this, mBinder);
+    }
 
     /* ======================================================================
      * ======================================================= initialization
@@ -253,9 +262,22 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         //Intent intent = new Intent(this, ASRService.class);
         //startService(intent);
 
-        Intent intent = new Intent(this, DemonstrationService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        Log.i(LOG_STRING, "onCreate() TaskListActivity");
+        if(!mBound) {
+          Intent intent = new Intent(this, DemonstrationService.class);
+          boolean success = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+          // this sets up the connection
+          Log.e(LOG_STRING, "Success of binding to service: " + success);
+        }
         
+        //if(mBinder == null) {
+        //  Log.e(LOG_STRING, "Null mBinder in TaskListActivity");
+        //}
+        //while(!mBound); // wait until we are bound to the service.
+        //if(mBinder == null) {
+        //  Log.e(LOG_STRING, "Still null mBinder in TaskListActivity");
+        //}
+        //AccessibilityShim.attachToActivity(this, mBinder);
     }
 
     @Override
@@ -486,6 +508,10 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     protected void onStop() {
         super.onStop();
         StatisticsService.sessionStop(this);
+        //if (mBound) {
+        //    unbindService(mConnection);
+        //    mBound = false;
+        //}
     }
 
     @Override
@@ -525,8 +551,15 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     protected void onDestroy() {
       super.onDestroy();
       // XXX: stop the ASR service
-      Intent intent = new Intent(this, ASRService.class);
-      stopService(intent);
+      //Intent intent = new Intent(this, ASRService.class);
+      //stopService(intent);
+
+      //Intent intent = new Intent(this, DemonstrationService.class);
+      //stopService(intent);
+      if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+      }
     }
 
     /**

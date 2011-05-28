@@ -25,6 +25,16 @@ import android.widget.TextView;
 
 import com.timsu.astrid.R;
 
+import com.todoroo.astrid.asr.ASRService;
+import com.todoroo.astrid.demonstration.*;
+import android.content.ServiceConnection;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.ComponentName;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+
 /**
  * Displays an About dialog.
  */

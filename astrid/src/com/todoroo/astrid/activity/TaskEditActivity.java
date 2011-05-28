@@ -30,7 +30,6 @@ import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
@@ -91,6 +90,17 @@ import com.todoroo.astrid.ui.CalendarDialog;
 import com.todoroo.astrid.ui.DeadlineTimePickerDialog;
 import com.todoroo.astrid.ui.DeadlineTimePickerDialog.OnDeadlineTimeSetListener;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
+
+import com.todoroo.astrid.asr.ASRService;
+import com.todoroo.astrid.demonstration.*;
+import android.content.ServiceConnection;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.ComponentName;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import android.content.Context;
 
 /**
  * This activity is responsible for creating new tasks and editing existing
@@ -188,6 +198,35 @@ public final class TaskEditActivity extends TabActivity {
      * ======================================================= initialization
      * ====================================================================== */
 
+    private DemonstrationService mService;
+    private DemonstrationService.DemonstrationBinder mBinder;
+    private boolean mBound = false; // whether we are bound to a demonstration service
+    private String LOG_STRING = "TaskEditActivity";
+
+    /** Defines callbacks for demonstration service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            Log.i(LOG_STRING, "onServiceConnect()from ServiceConnection.");
+            mBinder = (DemonstrationService.DemonstrationBinder) service;
+            mService = mBinder.getService();
+            attachShim(); // now that we have the binder, fire up the shim.
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    protected void attachShim() {
+      AccessibilityShim.attachToActivity(this, mBinder);
+    }
+
     public TaskEditActivity() {
         DependencyInjectionService.getInstance().inject(this);
     }
@@ -209,6 +248,14 @@ public final class TaskEditActivity extends TabActivity {
 		        model = task;
 		    }
 		}
+
+    if(!mBound) {
+      Log.i(LOG_STRING, "onCreate() TaskEditActivity");
+      Intent intent = new Intent(this, DemonstrationService.class);
+      boolean success = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+      // this sets up the connection
+      Log.e(LOG_STRING, "Success of binding to service: " + success);
+    }
 
 		setResult(RESULT_OK);
     }
@@ -630,6 +677,15 @@ public final class TaskEditActivity extends TabActivity {
         registerReceiver(controlReceiver,
                 new IntentFilter(AstridApiConstants.BROADCAST_SEND_EDIT_CONTROLS));
         populateFields();
+    }
+
+    @Override
+    protected void onDestroy() {
+      super.onDestroy();
+      if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+      }
     }
 
     @Override

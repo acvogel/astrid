@@ -52,6 +52,17 @@ import com.todoroo.astrid.service.StartupService;
 import com.todoroo.astrid.service.StatisticsService;
 import com.todoroo.astrid.service.ThemeService;
 
+import com.todoroo.astrid.asr.ASRService;
+import com.todoroo.astrid.demonstration.*;
+import android.content.ServiceConnection;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.ComponentName;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import android.content.Context;
+
 /**
  * Activity that displays a user's task lists and allows users
  * to filter their task list.
@@ -82,6 +93,35 @@ public class FilterListActivity extends ExpandableListActivity {
      * ======================================================= initialization
      * ====================================================================== */
 
+    private DemonstrationService mService;
+    private DemonstrationService.DemonstrationBinder mBinder;
+    private boolean mBound = false; // whether we are bound to a demonstration service
+    private String LOG_STRING = "FilterListActivity";
+
+    /** Defines callbacks for demonstration service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            Log.i(LOG_STRING, "onServiceConnect()from ServiceConnection.");
+            mBinder = (DemonstrationService.DemonstrationBinder) service;
+            mService = mBinder.getService();
+            attachShim(); // now that we have the binder, fire up the shim.
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    protected void attachShim() {
+      AccessibilityShim.attachToActivity(this, mBinder);
+    }
+
     public FilterListActivity() {
         DependencyInjectionService.getInstance().inject(this);
     }
@@ -103,6 +143,24 @@ public class FilterListActivity extends ExpandableListActivity {
         // dithering
         getWindow().setFormat(PixelFormat.RGBA_8888);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DITHER);
+
+        // demonstration
+        if(!mBound) {
+          Log.i(LOG_STRING, "onCreate() TaskEditActivity");
+          Intent intent = new Intent(this, DemonstrationService.class);
+          boolean success = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+          // this sets up the connection
+          Log.e(LOG_STRING, "Success of binding to service: " + success);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+      super.onDestroy();
+      if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+      }
     }
 
     /**
