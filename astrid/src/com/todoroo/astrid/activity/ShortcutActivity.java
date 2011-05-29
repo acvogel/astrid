@@ -35,7 +35,6 @@ import com.todoroo.astrid.api.Filter;
 import com.todoroo.astrid.api.FilterWithCustomIntent;
 import com.todoroo.astrid.data.Task;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

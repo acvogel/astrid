@@ -91,7 +91,6 @@ import com.todoroo.astrid.ui.DeadlineTimePickerDialog;
 import com.todoroo.astrid.ui.DeadlineTimePickerDialog.OnDeadlineTimeSetListener;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

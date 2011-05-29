@@ -52,7 +52,6 @@ import com.todoroo.astrid.service.StartupService;
 import com.todoroo.astrid.service.StatisticsService;
 import com.todoroo.astrid.service.ThemeService;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

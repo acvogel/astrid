@@ -47,7 +47,6 @@ import com.todoroo.astrid.utility.Flags;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 import com.todoroo.astrid.voice.VoiceOutputService;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

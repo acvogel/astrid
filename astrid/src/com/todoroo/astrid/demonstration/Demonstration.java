@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,8 @@ public class Demonstration { //implements Serializable {
   public final String LOG_STRING = "DEMONSTRATION";
 
   public final String MOTION_FILE = "MotionEvents.txt";
+
+  // should instead do these with something else... a list of InputEvents ?
 
   public transient List<MotionEvent> mMotionEvents;
   public transient List<KeyEvent> mKeyEvents;
@@ -71,6 +74,7 @@ public class Demonstration { //implements Serializable {
     KeyEvent newKeyEvent = new KeyEvent(ev);
     mKeyEvents.add(newKeyEvent);
   }
+
 
   // XXX DEPRECATED CODE -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

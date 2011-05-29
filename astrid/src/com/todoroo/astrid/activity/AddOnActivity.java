@@ -23,7 +23,6 @@ import com.todoroo.astrid.data.AddOn;
 import com.todoroo.astrid.service.AddOnService;
 import com.todoroo.astrid.service.AstridDependencyInjector;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

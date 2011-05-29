@@ -22,7 +22,6 @@ import com.todoroo.astrid.adapter.TaskAdapter;
 import com.todoroo.astrid.core.SortHelper;
 import com.todoroo.astrid.data.Task;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

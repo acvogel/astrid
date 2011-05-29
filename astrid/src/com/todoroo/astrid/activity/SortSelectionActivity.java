@@ -11,7 +11,6 @@ import android.widget.RadioButton;
 import com.timsu.astrid.R;
 import com.todoroo.astrid.core.SortHelper;
 
-import com.todoroo.astrid.asr.ASRService;
 import com.todoroo.astrid.demonstration.*;
 import android.content.ServiceConnection;
 import android.app.IntentService;

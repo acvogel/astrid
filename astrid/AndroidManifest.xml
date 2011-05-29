@@ -163,7 +163,7 @@
     <!-- ======================================================== Services = -->
 
     <service android:name="com.todoroo.astrid.widget.TasksWidget$UpdateService" />
-    <service android:name="com.todoroo.astrid.asr.ASRService" 
+    <service android:name="com.todoroo.astrid.demonstration.ASRService" 
              android:permission="android.permission.RECORD_AUDIO"/>
     <service android:name="com.todoroo.astrid.demonstration.DemonstrationService" />
 
