@@ -100,6 +100,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.RemoteException;
+import android.view.MotionEvent;
 
 /**
  * This activity is responsible for creating new tasks and editing existing
@@ -368,6 +372,7 @@ public final class TaskEditActivity extends TabActivity {
                 controls.add(notesControlSet);
 
                 // set up listeners
+                Log.i(LOG_STRING, "before set up listeners");
                 setUpListeners();
             }
         }.start();
@@ -378,17 +383,35 @@ public final class TaskEditActivity extends TabActivity {
     private void setUpListeners() {
         final View.OnClickListener mSaveListener = new View.OnClickListener() {
             public void onClick(View v) {
+                SpyImageButton spy = (SpyImageButton) v;
+                Log.i(LOG_STRING, "Spy button get: " + spy.LOG_STRING);
+                //System.err.println("BLH BLAH BLAH BLAH");
+                for(MotionEvent ev : spy.mMotionEventList) {
+                  Parcel parcel = Parcel.obtain();
+                  parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+                  try {
+                    if(mBinder == null) {
+                      Log.e(LOG_STRING, "Null binder!"); 
+                    }
+                    mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+                  } catch (RemoteException e) {
+                    Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+                  }
+                  // if this works, then call the binder...
+                }
                 saveButtonClick();
             }
         };
         final View.OnClickListener mDiscardListener = new View.OnClickListener() {
             public void onClick(View v) {
+                Log.i(LOG_STRING, "DISCARD BUTTON !!!");
                 discardButtonClick();
             }
         };
 
         // set up save, cancel, and delete buttons
         try {
+            Log.i(LOG_STRING, "setting up listeners");
             ImageButton saveButtonGeneral = (ImageButton) findViewById(R.id.save_basic);
             saveButtonGeneral.setOnClickListener(mSaveListener);
             ImageButton saveButtonDates = (ImageButton) findViewById(R.id.save_extra);
@@ -548,6 +571,7 @@ public final class TaskEditActivity extends TabActivity {
      * ====================================================================== */
 
     protected void saveButtonClick() {
+        Log.i(LOG_STRING, "SAVE BUTTON CLICK" );
         setResult(RESULT_OK);
         finish();
     }

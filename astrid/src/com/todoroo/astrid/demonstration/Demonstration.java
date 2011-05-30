@@ -28,6 +28,13 @@ public class Demonstration { //implements Serializable {
 
   public transient List<MotionEvent> mMotionEvents;
   public transient List<KeyEvent> mKeyEvents;
+
+  //public List<Object> mInputEvents;
+  public String mCommand; // voice command
+
+   
+
+
   //File mExternalDir;
 
   public Demonstration () {

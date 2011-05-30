@@ -32,8 +32,11 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         while (true){
             Thread.sleep(500);
             // code for polling the binder parcel
+            Parcel reply = Parcel.obtain();
+            mBinder.transact(DemonstrationService.TEST_EVENT_CODE, null, reply, 0);
+            List<MotionEvent> evList; 
+            reply.readList(evList, MotionEvent.class.getClassLoader());
         }
-
     }
 
 }
