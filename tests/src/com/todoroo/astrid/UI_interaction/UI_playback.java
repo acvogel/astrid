@@ -1,7 +1,13 @@
 package com.todoroo.astrid.UI_interaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Instrumentation;
+import android.os.Parcel;
 import android.speech.tts.TextToSpeech;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.MotionEvent;
 
 import com.todoroo.astrid.activity.TaskListActivity;
 import com.todoroo.astrid.demonstration.DemonstrationService;
@@ -33,9 +39,24 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
             Thread.sleep(500);
             // code for polling the binder parcel
             Parcel reply = Parcel.obtain();
-            mBinder.transact(DemonstrationService.TEST_EVENT_CODE, null, reply, 0);
-            List<MotionEvent> evList; 
+
+            try {
+                mBinder.transact(DemonstrationService.TEST_EVENT_CODE, null, reply, 0);
+            }
+            catch (Exception e){
+                System.out.println("way to fuck up");
+            }
+
+            List<MotionEvent> evList = new ArrayList<MotionEvent>();
             reply.readList(evList, MotionEvent.class.getClassLoader());
+
+            Instrumentation inst = getInstrumentation();
+
+            int parcel_size = evList.size();
+            for (int i = 0; i < parcel_size; i++){
+                inst.sendPointerSync(evList.get(i));
+                Thread.sleep(1000);
+            }
         }
     }
 
