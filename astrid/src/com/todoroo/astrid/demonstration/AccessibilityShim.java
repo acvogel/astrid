@@ -23,13 +23,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.content.ServiceConnection;
-import android.os.Binder;
-import android.os.IBinder;
 
 /**
  * <p>

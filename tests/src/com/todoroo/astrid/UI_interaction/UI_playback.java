@@ -1,15 +1,16 @@
 package com.todoroo.astrid.UI_interaction;
 
-import android.app.Instrumentation;
 import android.speech.tts.TextToSpeech;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.todoroo.astrid.activity.TaskListActivity;
+import com.todoroo.astrid.demonstration.DemonstrationService;
 
 public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivity> {
 
     private TaskListActivity mActivity;
     private TextToSpeech mTts;
+    private DemonstrationService.DemonstrationBinder mBinder;
 
     public UI_playback() {
         super("com.todoroo.astrid.activity.TaskListActivity", TaskListActivity.class);
@@ -20,16 +21,18 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         super.setUp();
         setActivityInitialTouchMode(false);
         mActivity = getActivity();
+        mBinder = mActivity.getBinder();
 
     }
 
     public void test_UI() throws InterruptedException {
-        Thread.sleep(1000);
 
-        //Test for change in a text box and carry out the command written in it
+        System.out.println(mBinder.toString());
 
-        // Open keyboard and accept voice input
-        Instrumentation inst = getInstrumentation();
+        while (true){
+            Thread.sleep(500);
+            // code for polling the binder parcel
+        }
 
     }
 

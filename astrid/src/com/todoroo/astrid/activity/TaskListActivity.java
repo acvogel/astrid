@@ -15,11 +15,13 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.PendingIntent.CanceledException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
@@ -28,9 +30,11 @@ import android.database.Cursor;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -83,6 +87,8 @@ import com.todoroo.astrid.dao.Database;
 import com.todoroo.astrid.dao.TaskDao.TaskCriteria;
 import com.todoroo.astrid.data.Metadata;
 import com.todoroo.astrid.data.Task;
+import com.todoroo.astrid.demonstration.AccessibilityShim;
+import com.todoroo.astrid.demonstration.DemonstrationService;
 import com.todoroo.astrid.helper.MetadataHelper;
 import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader;
 import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader.ContextMenuItem;
@@ -99,15 +105,6 @@ import com.todoroo.astrid.utility.Constants;
 import com.todoroo.astrid.utility.Flags;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 import com.todoroo.astrid.widget.TasksWidget;
-
-import com.todoroo.astrid.demonstration.*;
-import android.content.ServiceConnection;
-import android.app.IntentService;
-import android.content.Intent;
-import android.content.ComponentName;
-import android.os.Binder;
-import android.os.IBinder;
-import android.util.Log;
 
 /**
  * Primary activity for the Bente application. Shows a list of upcoming
@@ -192,7 +189,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private boolean mBound = false; // whether we are bound to a demonstration service
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -268,7 +265,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
           // this sets up the connection
           Log.e(LOG_STRING, "Success of binding to service: " + success);
         }
-        
+
         //if(mBinder == null) {
         //  Log.e(LOG_STRING, "Null mBinder in TaskListActivity");
         //}
@@ -1178,6 +1175,10 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         }
 
         setUpTaskList();
+    }
+
+    public DemonstrationService.DemonstrationBinder getBinder(){
+        return mBinder;
     }
 
 }
