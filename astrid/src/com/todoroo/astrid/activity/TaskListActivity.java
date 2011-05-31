@@ -186,10 +186,11 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private Timer backgroundTimer;
     private final LinkedHashSet<SyncAction> syncActions = new LinkedHashSet<SyncAction>();
 
-    // XXX voicify code -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     private final TaskListContextMenuExtensionLoader contextMenuExtensionLoader = new TaskListContextMenuExtensionLoader();
     private VoiceInputAssistant voiceInputAssistant;
+
+    // XXX voicify code -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     private DemonstrationService mService;
     private DemonstrationService.DemonstrationBinder mBinder;
@@ -232,7 +233,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
       AccessibilityShim.attachToActivity(this, mBinder);
     }
 
-    // this is where you start the speech capture
+    
     private void onRecord(boolean start) {
       if(!start) {
           //mTextView.setText("making it happen");
@@ -259,23 +260,16 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
     class SpeechListener implements RecognitionListener {
       public void onBeginningOfSpeech() {
-        //String str = "Starting speech!";
-        //mTextView.setText(str);
       }
       public void onBufferReceived(byte[] buffer) {}
       public void onEndOfSpeech() {
-        //mTextView.setText("END!");
-      
       }
       public void onError(int error) {
-        //mTextView.setText("ERROR: " + error);
       }
       public void onEvent(int eventType, Bundle params) {
-        //mTextView.setText("event!");
       }
       public void onPartialResults(Bundle partialResults) {}
       public void onReadyForSpeech(Bundle params) {
-        //mTextView.setText("ready for speech");
       }
       public void onResults(Bundle results) { // this is a key one ?
         ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -293,8 +287,6 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         }
       } 
       public void onRmsChanged(float rmsdB) {
-        //mTextView.setText("RMS CHANGE");
-
       }
     }
 

@@ -39,7 +39,8 @@ public class DemonstrationService extends IntentService {
 
   public static final String DEMONSTRATION_FILE = "demonstration.ser";
 
-  private Demonstration mDemonstration;
+  private Demonstration mDemonstration; // the current demonstration we are editing
+  private DemonstrationDB mDemonstrationDB; // the set of all demonstrations.
   private DemonstrationBinder mBinder;
 
   // service has 2 modes, training or testing.
@@ -65,47 +66,49 @@ public class DemonstrationService extends IntentService {
 
     mDemonstration = new Demonstration();
     mBinder = new DemonstrationBinder();
+    mDemonstrationDB = new DemonstrationDB();
     
     // do reading and writing here.
-    unserializeDemonstration();
+    //unserializeDemonstrationDB();
   }
 
   @Override
   public void onDestroy () {
     // do serialization
-    serializeDemonstration();
+    serializeDemonstrationDB();
     return;
   }
 
   // open the file, write it out
-  public void serializeDemonstration() {
-    Log.i(LOG_STRING, "Serializing demonstration");
+  public void serializeDemonstrationDB() {
+    Log.i(LOG_STRING, "Serializing demonstrationDB");
+    Log.i(LOG_STRING, mDemonstrationDB.toString());
     try {
       File demonstrationFile = new File(mExternalDir, DEMONSTRATION_FILE);
       ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(demonstrationFile));
-      //mDemonstration.writeObject(out);
-      out.writeObject(mDemonstration);
+      //out.writeObject(mDemonstration);
+      out.writeObject(mDemonstrationDB);
       out.close();
     } catch (Exception e) {
       Log.e(LOG_STRING, "Messed up serialization: " + e.toString());
     }    
   }
 
-  public void unserializeDemonstration() {
-    Log.i(LOG_STRING, "Unserializing demonstration");
+  public void unserializeDemonstrationDB() {
+    Log.i(LOG_STRING, "Unserializing demonstrationDB");
     try {
       File demonstrationFile = new File(mExternalDir, DEMONSTRATION_FILE);
       if(demonstrationFile.exists()) {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(demonstrationFile));
-        //mDemonstration.writeObject(out);
-        mDemonstration = (Demonstration) in.readObject();
+        //mDemonstration = (Demonstration) in.readObject();
+        mDemonstrationDB = (DemonstrationDB) in.readObject();
         in.close();
       }
     } catch (Exception e) {
       Log.e(LOG_STRING, "Messed up unserialization: " + e.toString() + " " + e.getMessage());
       e.printStackTrace();
     }    
-    Log.i(LOG_STRING, "Demonstration we read: " + mDemonstration.toString());
+    Log.i(LOG_STRING, "Demonstration we read: " + mDemonstrationDB.toString());
     mPlaybackReady = true; // ready to playback after we read in the demonstration.
   }
 
@@ -166,9 +169,6 @@ public class DemonstrationService extends IntentService {
         case TEST_EVENT_CODE:
           if(mPlaybackReady) {
             mRecord = false; // make sure we are in playback mode.
-            // build a parcel.
-            //MotionEvent ev1 = MotionEvent.obtain((long)1, (long)2, 0, (float)440, (float)780, (float)0.157, (float)0.066, 0, (float)1.0, (float)1.0, 0, 0);
-            //MotionEvent ev2 = MotionEvent.obtain((long)1, (long)2, 1, (float)440, (float)780, (float)0.157, (float)0.066, 0, (float)1.0, (float)1.0, 0, 0);
             List<MotionEvent> evList = mDemonstration.mMotionEvents;
             Log.i(LOG_STRING, "Sending for playback: ");
             for(MotionEvent ev: evList) {
@@ -191,6 +191,8 @@ public class DemonstrationService extends IntentService {
           } else {
             Log.i(LOG_STRING, "Done recording demonstration.");
             mRecord = false;
+            mDemonstrationDB.addDemonstration(mDemonstration);
+            mDemonstration = new Demonstration();
             // should do some sort of saving here. make a DemonstrationDatabase class.
           }
           break;
@@ -202,10 +204,10 @@ public class DemonstrationService extends IntentService {
           // set the directory to read/write files to.
           if(mExternalDir == null) {
             mExternalDir = data.readString();
-            unserializeDemonstration();
+            unserializeDemonstrationDB();
           }
-          
           break;
+
         default:
           Log.e(LOG_STRING, "Unknown transaction code: " + code);
       }

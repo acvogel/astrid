@@ -104,6 +104,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.view.MotionEvent;
+import android.speech.*;
+import android.speech.tts.*;
 
 /**
  * This activity is responsible for creating new tasks and editing existing
@@ -142,12 +144,14 @@ public final class TaskEditActivity extends TabActivity {
     private static final int MENU_SAVE_ID = Menu.FIRST;
     private static final int MENU_DISCARD_ID = Menu.FIRST + 1;
     private static final int MENU_DELETE_ID = Menu.FIRST + 2;
+    private static final int MENU_DEMONSTRATION_ID = Menu.FIRST + 3;
 
     // --- result codes
 
     public static final int RESULT_CODE_SAVED = RESULT_FIRST_USER;
     public static final int RESULT_CODE_DISCARDED = RESULT_FIRST_USER + 1;
     public static final int RESULT_CODE_DELETED = RESULT_FIRST_USER + 2;
+    public static final int RESULT_CODE_DEMONSTRATION = RESULT_FIRST_USER + 3;
 
     // --- services
 
@@ -206,6 +210,9 @@ public final class TaskEditActivity extends TabActivity {
     private boolean mBound = false; // whether we are bound to a demonstration service
     private String LOG_STRING = "TaskEditActivity";
 
+    private SpeechRecognizer mSpeechRecognizer = null;
+    private SpeechListener mSpeechListener = null;
+
     /** Defines callbacks for demonstration service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -229,6 +236,65 @@ public final class TaskEditActivity extends TabActivity {
     protected void attachShim() {
       AccessibilityShim.attachToActivity(this, mBinder);
     }
+
+
+    private void onRecord(boolean start) {
+      if(!start) {
+          //mTextView.setText("making it happen");
+          //RecognizerIntent recognizerIntent = new RecognizerIntent();
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                  RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+          intent.putExtra("calling_package","com.todoroo.astrid.activity.TaskEditActivity");
+          //mSpeechRecognizer.startListening(intent);
+          //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+          mSpeechRecognizer.startListening(intent);
+      } else {
+        mSpeechRecognizer.stopListening();
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString("STOP RECORDING");
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+        //mTextView.setText("ain't happening no more");
+      }
+    }
+
+    class SpeechListener implements RecognitionListener {
+      public void onBeginningOfSpeech() {
+      }
+      public void onBufferReceived(byte[] buffer) {}
+      public void onEndOfSpeech() {
+      }
+      public void onError(int error) {
+      }
+      public void onEvent(int eventType, Bundle params) {
+      }
+      public void onPartialResults(Bundle partialResults) {}
+      public void onReadyForSpeech(Bundle params) {
+      }
+      public void onResults(Bundle results) { // this is a key one ?
+        ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        // now display these to a layout element - how?
+        //mTextView.setText("" + text.size() + " " + text.get(0));
+        Log.i(LOG_STRING, "ASR result: " + text.get(0));
+        //mTextToSpeech.speak(text.get(0), 0, null);
+        // use binder..
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString(text.get(0));
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+      } 
+      public void onRmsChanged(float rmsdB) {
+      }
+    }
+
+    // XXX voicify code -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     public TaskEditActivity() {
         DependencyInjectionService.getInstance().inject(this);
@@ -259,6 +325,11 @@ public final class TaskEditActivity extends TabActivity {
       // this sets up the connection
       Log.e(LOG_STRING, "Success of binding to service: " + success);
     }
+
+    // set up speech 
+    mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
+    mSpeechListener = new SpeechListener();
+    mSpeechRecognizer.setRecognitionListener(mSpeechListener);
 
 		setResult(RESULT_OK);
     }
@@ -674,9 +745,24 @@ public final class TaskEditActivity extends TabActivity {
         case MENU_DELETE_ID:
             deleteButtonClick();
             return true;
+        case MENU_DEMONSTRATION_ID:
+            return demonstrationClick();
         }
 
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private boolean demonstrationClick() {
+      Parcel reply = Parcel.obtain();
+      boolean record = false;
+      try {
+        mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+        record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+      } catch (RemoteException e) {
+        Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+      }
+      onRecord(record);
+      return true;
     }
 
     @Override
@@ -692,6 +778,9 @@ public final class TaskEditActivity extends TabActivity {
 
         item = menu.add(Menu.NONE, MENU_DELETE_ID, 0, R.string.TEA_menu_delete);
         item.setIcon(android.R.drawable.ic_menu_delete);
+
+        item = menu.add(Menu.NONE, MENU_DEMONSTRATION_ID, 0, R.string.TLA_menu_help);
+        item.setIcon(android.R.drawable.ic_menu_help);
 
         return true;
     }

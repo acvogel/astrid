@@ -61,6 +61,13 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.content.Context;
+import android.speech.*;
+import android.speech.tts.*;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity that displays a user's task lists and allows users
@@ -96,6 +103,8 @@ public class FilterListActivity extends ExpandableListActivity {
     private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
     private String LOG_STRING = "FilterListActivity";
+    private SpeechRecognizer mSpeechRecognizer = null;
+    private SpeechListener mSpeechListener = null;
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -119,6 +128,62 @@ public class FilterListActivity extends ExpandableListActivity {
 
     protected void attachShim() {
       AccessibilityShim.attachToActivity(this, mBinder);
+    }
+
+    private void onRecord(boolean start) {
+      if(!start) {
+          //mTextView.setText("making it happen");
+          //RecognizerIntent recognizerIntent = new RecognizerIntent();
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                  RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+          intent.putExtra("calling_package","com.todoroo.astrid.activity.FilterListActivity");
+          //mSpeechRecognizer.startListening(intent);
+          //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+          mSpeechRecognizer.startListening(intent);
+      } else {
+        mSpeechRecognizer.stopListening();
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString("STOP RECORDING");
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+        //mTextView.setText("ain't happening no more");
+      }
+    }
+
+    class SpeechListener implements RecognitionListener {
+      public void onBeginningOfSpeech() {
+      }
+      public void onBufferReceived(byte[] buffer) {}
+      public void onEndOfSpeech() {
+      }
+      public void onError(int error) {
+      }
+      public void onEvent(int eventType, Bundle params) {
+      }
+      public void onPartialResults(Bundle partialResults) {}
+      public void onReadyForSpeech(Bundle params) {
+      }
+      public void onResults(Bundle results) { // this is a key one ?
+        ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        // now display these to a layout element - how?
+        //mTextView.setText("" + text.size() + " " + text.get(0));
+        Log.i(LOG_STRING, "ASR result: " + text.get(0));
+        //mTextToSpeech.speak(text.get(0), 0, null);
+        // use binder..
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString(text.get(0));
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+      } 
+      public void onRmsChanged(float rmsdB) {
+      }
     }
 
     public FilterListActivity() {
@@ -145,12 +210,17 @@ public class FilterListActivity extends ExpandableListActivity {
 
         // demonstration
         if(!mBound) {
-          Log.i(LOG_STRING, "onCreate() TaskEditActivity");
+          Log.i(LOG_STRING, "onCreate() FilterListActivity");
           Intent intent = new Intent(this, DemonstrationService.class);
           boolean success = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
           // this sets up the connection
           Log.e(LOG_STRING, "Success of binding to service: " + success);
         }
+
+        // set up speech 
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
+        mSpeechListener = new SpeechListener();
+        mSpeechRecognizer.setRecognitionListener(mSpeechListener);
     }
 
     @Override
@@ -402,9 +472,18 @@ public class FilterListActivity extends ExpandableListActivity {
         }
 
         case MENU_HELP_ID: {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://weloveastrid.com/help-user-guide-astrid-v3/filters/")); //$NON-NLS-1$
-            startActivity(intent);
+            //Intent intent = new Intent(Intent.ACTION_VIEW,
+            //        Uri.parse("http://weloveastrid.com/help-user-guide-astrid-v3/filters/")); //$NON-NLS-1$
+            //startActivity(intent);
+            Parcel reply = Parcel.obtain();
+            boolean record = false;
+            try {
+              mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+              record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+            } catch (RemoteException e) {
+              Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+            }
+            onRecord(record);
             return true;
         }
 

@@ -1,4 +1,3 @@
-//package com.android.example.spinner;
 package com.todoroo.astrid.demonstration;
 
 import android.os.Parcel;
@@ -67,6 +66,7 @@ public class Demonstration implements Serializable {
   public String toString() {
     StringBuffer sb = new StringBuffer();
     //sb.append("External directory: " + mExternalDir.toString() + "\n");
+    sb.append("Command: " + mCommand + "\n");
     sb.append(mMotionEvents.toString());
     sb.append(mKeyEvents.toString());
     return sb.toString();
