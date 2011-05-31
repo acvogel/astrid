@@ -28,9 +28,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcel;
+import android.os.RemoteException;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -105,12 +109,6 @@ import com.todoroo.astrid.utility.Constants;
 import com.todoroo.astrid.utility.Flags;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 import com.todoroo.astrid.widget.TasksWidget;
-
-import android.speech.*;
-import android.speech.tts.*;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.RemoteException;
 
 /**
  * Primary activity for the Bente application. Shows a list of upcoming
@@ -217,7 +215,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
               Log.i(LOG_STRING, "External directory: " + externalDir);
               Parcel parcel = Parcel.obtain();
               parcel.writeString(externalDir);
-              mBinder.transact(DemonstrationService.SET_DIRECTORY_CODE, parcel, null, IBinder.FLAG_ONEWAY); 
+              mBinder.transact(DemonstrationService.SET_DIRECTORY_CODE, parcel, null, IBinder.FLAG_ONEWAY);
             } catch(Exception e) {
               Log.e(LOG_STRING, "Error getting external dir: " + e.toString());
             }
@@ -238,7 +236,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
       if(!start) {
           //mTextView.setText("making it happen");
           //RecognizerIntent recognizerIntent = new RecognizerIntent();
-          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
           intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
           intent.putExtra("calling_package","com.todoroo.astrid.activity.TaskListActivity");
@@ -285,7 +283,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         } catch(RemoteException e) {
           Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
         }
-      } 
+      }
       public void onRmsChanged(float rmsdB) {
       }
     }
@@ -344,7 +342,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
           Log.e(LOG_STRING, "Success of binding to service: " + success);
         }
 
-        // set up speech 
+        // set up speech
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
         mSpeechListener = new SpeechListener();
         mSpeechRecognizer.setRecognitionListener(mSpeechListener);
@@ -399,7 +397,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         item.setIcon(R.drawable.ic_menu_refresh);
 
         item = menu.add(Menu.NONE, MENU_HELP_ID, Menu.NONE,
-                R.string.TLA_menu_help);
+                "VOICIFY");
         item.setIcon(android.R.drawable.ic_menu_help);
 
         // ask about plug-ins
