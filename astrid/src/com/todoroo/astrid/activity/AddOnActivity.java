@@ -52,7 +52,7 @@ public class AddOnActivity extends TabActivity {
     private DemonstrationService mService;
     private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
-    private String LOG_STRING = "TaskEditActivity";
+    private String LOG_STRING = "AddOnActivity";
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {

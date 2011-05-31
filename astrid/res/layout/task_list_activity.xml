@@ -49,7 +49,10 @@
         android:orientation="horizontal">
         
         <!-- Voice Add Button -->
-        <ImageButton android:id="@+id/voiceAddButton"
+        <!--<ImageButton -->
+        <view 
+            android:id="@+id/voiceAddButton"
+            class = "com.todoroo.astrid.demonstration.SpyImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -58,7 +61,10 @@
             android:scaleType="fitCenter"/> 
     
         <!-- Quick Add Button -->
-        <ImageButton android:id="@+id/quickAddButton"
+        <!--<ImageButton -->
+        <view 
+            class = "com.todoroo.astrid.demonstration.SpyImageButton"
+            android:id="@+id/quickAddButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -77,7 +83,10 @@
             android:capitalize="sentences"/>
         
         <!-- Extended Add Button -->
-        <ImageButton android:id="@+id/extendedAddButton"
+        <!--<ImageButton  -->
+        <view 
+            class = "com.todoroo.astrid.demonstration.SpyImageButton"
+            android:id="@+id/extendedAddButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

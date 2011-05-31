@@ -19,7 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Holds key presses and voice actions taken during a demonstration. */
-public class Demonstration { //implements Serializable {
+public class Demonstration implements Serializable {
+  static final long serialVersionUID = 7526472295622776147L;
+  // serialization UID command. run from astrid/astrid/
+  //serialver -classpath bin/classes/:/home/av/android/android-sdk-linux_x86/platforms/android-8/android.jar com.todoroo.astrid.demonstration.Demonstration 
+
   public final String LOG_STRING = "DEMONSTRATION";
 
   public final String MOTION_FILE = "MotionEvents.txt";
@@ -29,10 +33,27 @@ public class Demonstration { //implements Serializable {
   public transient List<MotionEvent> mMotionEvents;
   public transient List<KeyEvent> mKeyEvents;
 
-  //public List<Object> mInputEvents;
-  public String mCommand; // voice command
+  public String mCommand; // the voice command
 
-   
+  //public transient int mLocation; // where we are in the demonstration. used for playback.
+
+  //public List<Object> mInputEvents;
+
+  /** Returns the next MotionEvent for playback and increments mLocation. 
+      Returns null if we have reached the end.
+    */
+  /*
+  public MotionEvent getNextEvent() {
+    if(mLocation < mMotionEvents.size()) {
+      MotionEvent ev = mMotionEvents.get(mLocation);
+      mLocation++;
+      return ev;
+    } else {
+      return null;
+    }
+  }
+  */
+
 
 
   //File mExternalDir;
@@ -40,6 +61,7 @@ public class Demonstration { //implements Serializable {
   public Demonstration () {
     mMotionEvents = new ArrayList<MotionEvent>();
     mKeyEvents = new ArrayList<KeyEvent>();
+    //mLocation = 0;
   }
 
   public String toString() {
@@ -52,21 +74,35 @@ public class Demonstration { //implements Serializable {
 
 
   // serialization
-  public void writeObject(ObjectOutputStream out) throws IOException {
-    //out.defaultWriteObject();
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
     ArrayList<MotionEventCache> cache = new ArrayList<MotionEventCache>();
     for(MotionEvent ev : mMotionEvents) {
       MotionEventCache evc = new MotionEventCache(ev);
       cache.add(evc);
     }
-    out.writeObject(cache);
+    Integer length = cache.size();
+    out.writeObject(length);
+    for(int i = 0; i < length; i ++) {
+      out.writeObject(cache.get(i));
+    }
+    //out.writeObject(cache);
     return;
   }
   
-  public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-    //in.defaultReadObject();
-    List<MotionEventCache> motionEventCache = (ArrayList<MotionEventCache>) in.readObject(); 
-    for(MotionEventCache mec : motionEventCache) {
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    Integer length = (Integer) in.readObject();
+    List<MotionEventCache> cache = new ArrayList<MotionEventCache>(); 
+      //= (ArrayList<MotionEventCache>) in.readObject(); 
+    for(int i = 0; i < length; i++) {
+      MotionEventCache evc = (MotionEventCache) in.readObject();
+      cache.add(evc);
+    }
+
+    mMotionEvents = new ArrayList<MotionEvent>();
+    mKeyEvents = new ArrayList<KeyEvent>();
+    for(MotionEventCache mec : cache) {
       MotionEvent ev = mec.obtain();
       mMotionEvents.add(ev);
     }
@@ -80,6 +116,11 @@ public class Demonstration { //implements Serializable {
   public void addKeyEvent(KeyEvent ev) {
     KeyEvent newKeyEvent = new KeyEvent(ev);
     mKeyEvents.add(newKeyEvent);
+  }
+
+  public void setCommand(String command) {
+    mCommand = command;
+    return;
   }
 
 

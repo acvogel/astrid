@@ -106,6 +106,12 @@ import com.todoroo.astrid.utility.Flags;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
 import com.todoroo.astrid.widget.TasksWidget;
 
+import android.speech.*;
+import android.speech.tts.*;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.RemoteException;
+
 /**
  * Primary activity for the Bente application. Shows a list of upcoming
  * tasks and a user's coaches.
@@ -180,6 +186,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private Timer backgroundTimer;
     private final LinkedHashSet<SyncAction> syncActions = new LinkedHashSet<SyncAction>();
 
+    // XXX voicify code -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     private final TaskListContextMenuExtensionLoader contextMenuExtensionLoader = new TaskListContextMenuExtensionLoader();
     private VoiceInputAssistant voiceInputAssistant;
@@ -187,6 +194,9 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     private DemonstrationService mService;
     private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
+
+    private SpeechRecognizer mSpeechRecognizer = null;
+    private SpeechListener mSpeechListener = null;
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
     private final ServiceConnection mConnection = new ServiceConnection() {
@@ -200,6 +210,16 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
             mService = mBinder.getService();
             attachShim(); // now that we have the binder, fire up the shim.
             mBound = true;
+            // now send the external file directory to the DemonstrationServer.
+            try {
+              String externalDir = getExternalFilesDir(null).getPath();
+              Log.i(LOG_STRING, "External directory: " + externalDir);
+              Parcel parcel = Parcel.obtain();
+              parcel.writeString(externalDir);
+              mBinder.transact(DemonstrationService.SET_DIRECTORY_CODE, parcel, null, IBinder.FLAG_ONEWAY); 
+            } catch(Exception e) {
+              Log.e(LOG_STRING, "Error getting external dir: " + e.toString());
+            }
         }
 
         @Override
@@ -211,6 +231,74 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     protected void attachShim() {
       AccessibilityShim.attachToActivity(this, mBinder);
     }
+
+    // this is where you start the speech capture
+    private void onRecord(boolean start) {
+      if(!start) {
+          //mTextView.setText("making it happen");
+          //RecognizerIntent recognizerIntent = new RecognizerIntent();
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                  RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+          intent.putExtra("calling_package","com.todoroo.astrid.activity.TaskListActivity");
+          //mSpeechRecognizer.startListening(intent);
+          //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+          mSpeechRecognizer.startListening(intent);
+      } else {
+        mSpeechRecognizer.stopListening();
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString("STOP RECORDING");
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+        //mTextView.setText("ain't happening no more");
+      }
+    }
+
+    class SpeechListener implements RecognitionListener {
+      public void onBeginningOfSpeech() {
+        //String str = "Starting speech!";
+        //mTextView.setText(str);
+      }
+      public void onBufferReceived(byte[] buffer) {}
+      public void onEndOfSpeech() {
+        //mTextView.setText("END!");
+      
+      }
+      public void onError(int error) {
+        //mTextView.setText("ERROR: " + error);
+      }
+      public void onEvent(int eventType, Bundle params) {
+        //mTextView.setText("event!");
+      }
+      public void onPartialResults(Bundle partialResults) {}
+      public void onReadyForSpeech(Bundle params) {
+        //mTextView.setText("ready for speech");
+      }
+      public void onResults(Bundle results) { // this is a key one ?
+        ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        // now display these to a layout element - how?
+        //mTextView.setText("" + text.size() + " " + text.get(0));
+        Log.i(LOG_STRING, "ASR result: " + text.get(0));
+        //mTextToSpeech.speak(text.get(0), 0, null);
+        // use binder..
+        try {
+          Parcel parcel = Parcel.obtain();
+          parcel.writeString(text.get(0));
+          mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+        } catch(RemoteException e) {
+          Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+        }
+      } 
+      public void onRmsChanged(float rmsdB) {
+        //mTextView.setText("RMS CHANGE");
+
+      }
+    }
+
+    // XXX voicify code -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
     /* ======================================================================
      * ======================================================= initialization
@@ -254,9 +342,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
         Eula.showEula(this);
 
-        // XXX: start the ASR service
-        //Intent intent = new Intent(this, ASRService.class);
-        //startService(intent);
+        // XXX voicify initialization
 
         Log.i(LOG_STRING, "onCreate() TaskListActivity");
         if(!mBound) {
@@ -266,14 +352,10 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
           Log.e(LOG_STRING, "Success of binding to service: " + success);
         }
 
-        //if(mBinder == null) {
-        //  Log.e(LOG_STRING, "Null mBinder in TaskListActivity");
-        //}
-        //while(!mBound); // wait until we are bound to the service.
-        //if(mBinder == null) {
-        //  Log.e(LOG_STRING, "Still null mBinder in TaskListActivity");
-        //}
-        //AccessibilityShim.attachToActivity(this, mBinder);
+        // set up speech 
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
+        mSpeechListener = new SpeechListener();
+        mSpeechRecognizer.setRecognitionListener(mSpeechListener);
     }
 
     @Override
@@ -1062,9 +1144,19 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
             performSyncAction();
             return true;
         case MENU_HELP_ID:
-            intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(Constants.HELP_URL));
-            startActivity(intent);
+            // XXX make this fire a voice dialog and then record UI interactions
+            //intent = new Intent(Intent.ACTION_VIEW,
+            //        Uri.parse(Constants.HELP_URL));
+            //startActivity(intent);
+            Parcel reply = Parcel.obtain();
+            boolean record = false;
+            try {
+              mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+              record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+            } catch (RemoteException e) {
+              Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+            }
+            onRecord(record);
             return true;
         case MENU_ADDON_INTENT_ID:
             intent = item.getIntent();

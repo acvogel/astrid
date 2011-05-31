@@ -384,9 +384,8 @@ public final class TaskEditActivity extends TabActivity {
         final View.OnClickListener mSaveListener = new View.OnClickListener() {
             public void onClick(View v) {
                 SpyImageButton spy = (SpyImageButton) v;
-                Log.i(LOG_STRING, "Spy button get: " + spy.LOG_STRING);
-                //System.err.println("BLH BLAH BLAH BLAH");
                 for(MotionEvent ev : spy.mMotionEventList) {
+                  Log.i(LOG_STRING, "Spy button get: " + ev.toString());
                   Parcel parcel = Parcel.obtain();
                   parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                   try {
@@ -397,14 +396,26 @@ public final class TaskEditActivity extends TabActivity {
                   } catch (RemoteException e) {
                     Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
                   }
-                  // if this works, then call the binder...
                 }
                 saveButtonClick();
             }
         };
         final View.OnClickListener mDiscardListener = new View.OnClickListener() {
             public void onClick(View v) {
-                Log.i(LOG_STRING, "DISCARD BUTTON !!!");
+                SpyImageButton spy = (SpyImageButton) v;
+                for(MotionEvent ev : spy.mMotionEventList) {
+                  Log.i(LOG_STRING, "Spy button get: " + ev.toString());
+                  Parcel parcel = Parcel.obtain();
+                  parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+                  try {
+                    if(mBinder == null) {
+                      Log.e(LOG_STRING, "Null binder!"); 
+                    }
+                    mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+                  } catch (RemoteException e) {
+                    Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+                  }
+                }
                 discardButtonClick();
             }
         };

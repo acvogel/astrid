@@ -55,7 +55,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
             int parcel_size = evList.size();
             for (int i = 0; i < parcel_size; i++){
                 inst.sendPointerSync(evList.get(i));
-                Thread.sleep(1000);
+                Thread.sleep(10);
             }
         }
     }

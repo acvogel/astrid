@@ -148,6 +148,7 @@ public class AccessibleFrameLayout extends FrameLayout {
 
         try {
           mExternalDir = context.getExternalFilesDir(null);
+          Log.i(LOG_STRING, "External directory: " + mExternalDir);
         } catch(Exception e) {
           Log.e(LOG_STRING, "Error getting external dir: " + e.toString());
         }
@@ -219,7 +220,7 @@ public class AccessibleFrameLayout extends FrameLayout {
         File demonstrationFile = new File(mExternalDir, DEMONSTRATION_FILE);
         Log.i(LOG_STRING, "Writing " + mDemonstration.toString() + " to " + demonstrationFile.toString());
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(demonstrationFile));
-        mDemonstration.writeObject(out);
+        //mDemonstration.writeObject(out);
         //out.writeObject(mDemonstration);
         out.close();
       } catch (Exception e) {
@@ -237,7 +238,7 @@ public class AccessibleFrameLayout extends FrameLayout {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
         //mDemonstration = (Demonstration) in.readObject();
         mDemonstration = new Demonstration();
-        mDemonstration.readObject(in);
+        //mDemonstration.readObject(in);
         in.close();
       } catch(Exception e) {
         System.err.println("Way to fuck it up: " + e.getMessage());
@@ -285,7 +286,7 @@ public class AccessibleFrameLayout extends FrameLayout {
 
         mTTS.shutdown();
         //serializeMotionEvents();
-        serializeDemonstration();
+        //serializeDemonstration();
     }
 
     /*
