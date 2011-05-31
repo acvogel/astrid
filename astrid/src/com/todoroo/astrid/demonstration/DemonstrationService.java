@@ -43,9 +43,15 @@ public class DemonstrationService extends IntentService {
   private DemonstrationDB mDemonstrationDB; // the set of all demonstrations.
   private DemonstrationBinder mBinder;
 
-  // service has 2 modes, training or testing.
-  public boolean mRecord = false; 
-  public boolean mPlaybackReady = false; // ready to playback a demonstration.
+  /** Whether to capture UI interactions in mDemonstration. Turned off during playback. */
+  private boolean mRecord = false; 
+
+  /** Ready to playback a demonstration. 
+      That is we've recieved a voice command and want to dispatch it to instrumentation. */
+  private boolean mPlaybackReady = false; 
+
+  /** Whether the instrumentation program has contact the service. */
+  private boolean mTestConnected = false;
 
   private List<Demonstration> mDemonstrationList; // stored demonstrations. needs to be serialized.
 
@@ -162,11 +168,12 @@ public class DemonstrationService extends IntentService {
             mDemonstration.addKeyEvent(kev);
           }
           break;
-        case TRACKBALL_EVENT_CODE: //currently unhandeled
+        case TRACKBALL_EVENT_CODE: //XXX: currently unhandeled
             Log.i(LOG_STRING, "Read trackball event from parcel.");
           break;
 
         case TEST_EVENT_CODE:
+          mTestConnected = true; // we've heard from the laptop
           if(mPlaybackReady) {
             mRecord = false; // make sure we are in playback mode.
             List<MotionEvent> evList = mDemonstration.mMotionEvents;
@@ -174,26 +181,29 @@ public class DemonstrationService extends IntentService {
             for(MotionEvent ev: evList) {
               Log.i(LOG_STRING, ev.toString());
             }
-            //evList.add(ev1);
-            //evList.add(ev2);
-            //Parcel parcel = Parcel.obtain();
             reply.writeList(evList);
             mPlaybackReady = false;
           }
           break;
         case TOGGLE_CODE:
           if(mRecord == false) {
-            String command = data.readString();
-            mDemonstration = new Demonstration();
-            mDemonstration.setCommand(command);
-            Log.i(LOG_STRING, "Starting to record demonstration with command: " + command);
-            mRecord = true;
+            if(mTestConnected) { // in playback mode.
+              String command = data.readString();
+              mDemonstration = mDemonstrationDB.parseCommand(command);
+              Log.i(LOG_STRING, "Parsed command \"" + command + "\" to demonstration " + mDemonstration);
+              mPlaybackReady = true; // have a demonstration to send to the server
+            } else { // go into capture mode.
+              String command = data.readString();
+              mDemonstration = new Demonstration();
+              mDemonstration.setCommand(command);
+              Log.i(LOG_STRING, "Starting to record demonstration with command: " + command);
+              mRecord = true;
+            }
           } else {
             Log.i(LOG_STRING, "Done recording demonstration.");
             mRecord = false;
             mDemonstrationDB.addDemonstration(mDemonstration);
             mDemonstration = new Demonstration();
-            // should do some sort of saving here. make a DemonstrationDatabase class.
           }
           break;
         case GET_TOGGLE_CODE: // used to get whether we are currently recording a demonstration.

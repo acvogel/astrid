@@ -942,9 +942,25 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         return task;
     }
 
+    // XXX todo: how do we do capture for onCreateContextMenu?  Hmmmm.
+    // One possibility is to 'cut out' the button, and just always go to edit. impoverished tho.
+    // but it will still display the context menu ?
+    // have the view v. what if i throw the accessibility shim in there?
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        // XXX 
+        //AccessibilityShim.attachToView(v, mBinder);
+        Log.i(LOG_STRING, "onCreateContextMenu()");
+
+            //long itemId = item.getGroupId();
+            long itemId = 1;
+            Intent intent = new Intent(TaskListActivity.this, TaskEditActivity.class);
+            intent.putExtra(TaskEditActivity.TOKEN_ID, itemId);
+            startActivityForResult(intent, ACTIVITY_EDIT_TASK);
+            return;
+        /*
+
         AdapterContextMenuInfo adapterInfo = (AdapterContextMenuInfo)menuInfo;
         Task task = ((ViewHolder)adapterInfo.targetView.getTag()).task;
         if (task.getFlag(Task.FLAGS, Task.FLAG_IS_READONLY))
@@ -987,6 +1003,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
                     R.string.TAd_contextDeleteTask);
 
         }
+        */
     }
 
     /** Show a dialog box and delete the task specified */
