@@ -23,7 +23,8 @@
             android:src="@drawable/tango_previous"
             android:scaleType="center"
             android:paddingLeft="5dip" 
-            android:paddingRight="5dip"/> 
+            android:paddingRight="5dip"
+            android:contentDescription="go back"/> 
         
         <!-- List Label -->
         <TextView android:id="@+id/listLabel"
@@ -70,7 +71,8 @@
             android:layout_weight="1"
             android:visibility="gone"
             android:src="@drawable/tango_add"
-            android:scaleType="fitCenter"/> 
+            android:scaleType="fitCenter"
+            android:contentDescription="add task"/> 
     
         <!-- Quick Add Task -->
         <EditText android:id="@+id/quickAddText"
@@ -91,7 +93,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/tango_edit"
-            android:scaleType="fitCenter"/> 
+            android:scaleType="fitCenter"
+            android:contentDescription="edit task"/> 
 
     </LinearLayout>
         

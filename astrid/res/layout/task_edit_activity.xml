@@ -136,7 +136,8 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:src="@drawable/tango_save" />
+          android:src="@drawable/tango_save" 
+          android:contentDescription="save"/>
         <!--<ImageButton-->
         <view
           class = "com.todoroo.astrid.demonstration.SpyImageButton"
@@ -144,7 +145,8 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:src="@drawable/tango_stop" />
+          android:src="@drawable/tango_stop" 
+          android:contentDescription="cancel"/>
       </LinearLayout>
     </LinearLayout>
   </ScrollView>
@@ -245,7 +247,8 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:src="@drawable/tango_save" />
+          android:src="@drawable/tango_save" 
+          android:contentDescription="save"/>
         <!--<ImageButton-->
         <view
           class = "com.todoroo.astrid.demonstration.SpyImageButton"
@@ -253,7 +256,8 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:src="@drawable/tango_stop" />
+          android:src="@drawable/tango_stop" 
+          android:contentDescription="cancel"/>
       </LinearLayout>
     </LinearLayout>
   </ScrollView>
@@ -328,7 +332,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/tango_save" />
+        android:src="@drawable/tango_save"
+        android:contentDescription="save"/>
       <!--<ImageButton-->
       <view
         class = "com.todoroo.astrid.demonstration.SpyImageButton"
@@ -336,7 +341,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@drawable/tango_stop" />
+        android:src="@drawable/tango_stop"
+        android:contentDescription="cancel"/>
         
     </LinearLayout>
     
