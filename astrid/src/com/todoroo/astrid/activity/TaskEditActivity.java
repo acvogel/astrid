@@ -106,6 +106,10 @@ import android.os.RemoteException;
 import android.view.MotionEvent;
 import android.speech.*;
 import android.speech.tts.*;
+import android.view.View.OnKeyListener;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+
 
 /**
  * This activity is responsible for creating new tasks and editing existing
@@ -175,7 +179,8 @@ public final class TaskEditActivity extends TabActivity {
     private ImageButton voiceAddNoteButton;
 
     private EditTextControlSet notesControlSet = null;
-    private EditText title;
+    //private EditText title;
+    private SpyEditText title;
 
     private final List<TaskEditControlSet> controls =
         Collections.synchronizedList(new ArrayList<TaskEditControlSet>());
@@ -197,7 +202,7 @@ public final class TaskEditActivity extends TabActivity {
     /** voice assistant for notes-creation */
     private VoiceInputAssistant voiceNoteAssistant = null;
 
-    private EditText notesEditText;
+    private SpyEditText notesEditText;
 
     private boolean cancelled = false;
 
@@ -222,6 +227,8 @@ public final class TaskEditActivity extends TabActivity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             Log.i(LOG_STRING, "onServiceConnect()from ServiceConnection.");
             mBinder = (DemonstrationService.DemonstrationBinder) service;
+            title.setBinder(mBinder);
+            notesEditText.setBinder(mBinder);
             mService = mBinder.getService();
             attachShim(); // now that we have the binder, fire up the shim.
             mBound = true;
@@ -362,11 +369,19 @@ public final class TaskEditActivity extends TabActivity {
         getTabWidget().setBackgroundColor(Color.BLACK);
 
         // populate control set
-        title = (EditText) findViewById(R.id.title);
+        title = (SpyEditText) findViewById(R.id.title);
+        // XXX try out a key handler
+        //title.setOnKeyListener(new OnKeyListener() {
+        //  public boolean onKey(View v, int keyCode, KeyEvent event) {
+        //    Log.i(LOG_STRING, "title onKey: " + event.toString());
+        //    return false;
+        //  }
+        //});
+
         controls.add(new EditTextControlSet(Task.TITLE, R.id.title));
         controls.add(new ImportanceControlSet(R.id.importance_container));
         controls.add(new UrgencyControlSet(R.id.urgency));
-        notesEditText = (EditText) findViewById(R.id.notes);
+        notesEditText = (SpyEditText) findViewById(R.id.notes);
 
         // prepare and set listener for voice-button
         if(addOnService.hasPowerPack()) {

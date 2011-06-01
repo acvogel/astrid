@@ -36,6 +36,7 @@ public class DemonstrationService extends IntentService {
   public static final int TOGGLE_CODE = 5; 
   public static final int GET_TOGGLE_CODE = 6; 
   public static final int SET_DIRECTORY_CODE = 7;
+  public static final int EDIT_TEXT_CODE = 8; // used when text box has gained focus
 
   public static final String DEMONSTRATION_FILE = "demonstration.ser";
 
@@ -216,6 +217,10 @@ public class DemonstrationService extends IntentService {
             mExternalDir = data.readString();
             unserializeDemonstrationDB();
           }
+          break;
+        
+        case EDIT_TEXT_CODE:
+          Log.i(LOG_STRING, "A text box has been edited. Now add the microphone input thing to the demonstration.");
           break;
 
         default:

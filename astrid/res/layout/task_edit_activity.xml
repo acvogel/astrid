@@ -25,7 +25,9 @@
         android:layout_height="wrap_content"
         android:text="@string/TEA_title_label"
         style="@style/TextAppearance.GEN_EditLabel" />
-      <com.todoroo.astrid.ui.ErrorCatchingEditText
+      <!--<com.todoroo.astrid.ui.ErrorCatchingEditText-->
+      <view
+        class="com.todoroo.astrid.demonstration.SpyEditText"
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -105,7 +107,9 @@
 	          android:src="@drawable/tango_microphone"
 	          android:scaleType="fitCenter"
 	          android:visibility="gone"/> 
-	      <EditText
+	      <!--<EditText-->
+        <view 
+          class="com.todoroo.astrid.demonstration.SpyEditText"
 	        android:id="@+id/notes"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

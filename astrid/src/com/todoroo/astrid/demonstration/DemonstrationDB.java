@@ -32,6 +32,10 @@ public class DemonstrationDB implements Serializable {
 
   public Set<Demonstration> mDemonstrations;
 
+  //public Demonstration mVoicePress; // hardcoded sequence to press the voice button
+
+  //public Demonstration mBackPress; // hardcoded sequence to hit the back button ?
+
   public DemonstrationDB() {
     mDemonstrations = new HashSet<Demonstration>();
   }

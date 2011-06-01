@@ -93,6 +93,8 @@ import com.todoroo.astrid.data.Metadata;
 import com.todoroo.astrid.data.Task;
 import com.todoroo.astrid.demonstration.AccessibilityShim;
 import com.todoroo.astrid.demonstration.DemonstrationService;
+import com.todoroo.astrid.demonstration.SpyImageButton;
+import com.todoroo.astrid.demonstration.SpyEditText;
 import com.todoroo.astrid.helper.MetadataHelper;
 import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader;
 import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader.ContextMenuItem;
@@ -178,9 +180,9 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
     protected int sortFlags;
     protected int sortSort;
 
-    private ImageButton voiceAddButton;
-    private ImageButton quickAddButton;
-    private EditText quickAddBox;
+    private SpyImageButton voiceAddButton;
+    private SpyImageButton quickAddButton;
+    private SpyEditText quickAddBox;
     private Timer backgroundTimer;
     private final LinkedHashSet<SyncAction> syncActions = new LinkedHashSet<SyncAction>();
 
@@ -465,7 +467,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         });
 
         // set listener for pressing enter in quick-add box
-        quickAddBox = (EditText) findViewById(R.id.quickAddText);
+        quickAddBox = (SpyEditText) findViewById(R.id.quickAddText);
         quickAddBox.setOnEditorActionListener(new OnEditorActionListener() {
             /**
              * When user presses enter, quick-add the task
@@ -482,7 +484,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
 
         // set listener for showing quick add button if text not empty
-        quickAddButton = ((ImageButton)findViewById(R.id.quickAddButton));
+        quickAddButton = ((SpyImageButton)findViewById(R.id.quickAddButton));
         quickAddBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -510,7 +512,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         });
 
         // prepare and set listener for voice add button
-        voiceAddButton = (ImageButton) findViewById(R.id.voiceAddButton);
+        voiceAddButton = (SpyImageButton) findViewById(R.id.voiceAddButton);
         int prompt = R.string.voice_edit_title_prompt;
         if (Preferences.getBoolean(R.string.p_voiceInputCreatesTask, false))
             prompt = R.string.voice_create_prompt;
@@ -817,9 +819,24 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
                 currentCursor, sqlQueryTemplate, false, null);
         setListAdapter(taskAdapter);
         getListView().setOnScrollListener(this);
-        registerForContextMenu(getListView());
 
+        //registerForContextMenu(getListView());
+        Log.i(LOG_STRING, "setUpTaskList()");
+        unregisterForContextMenu(getListView());
+
+        
         loadTaskListContent(false);
+    }
+
+    @Override
+    protected void onListItemClick (ListView l, View v, int position, long id) {
+      // ok, do the intent bs.
+      long itemId = position;
+      Intent intent = new Intent(TaskListActivity.this, TaskEditActivity.class);
+      intent.putExtra(TaskEditActivity.TOKEN_ID, itemId);
+      startActivityForResult(intent, ACTIVITY_EDIT_TASK);
+      Log.i(LOG_STRING, "onListItemClick has been called, yet we still see a context menu");
+      //super.onListItemClick (l, v, position, id);
     }
 
     /**

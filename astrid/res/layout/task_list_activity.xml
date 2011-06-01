@@ -73,7 +73,10 @@
             android:scaleType="fitCenter"/> 
     
         <!-- Quick Add Task -->
-        <EditText android:id="@+id/quickAddText"
+        <!--<EditText -->
+        <view
+            class="com.todoroo.astrid.demonstration.SpyEditText"
+            android:id="@+id/quickAddText"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="100"

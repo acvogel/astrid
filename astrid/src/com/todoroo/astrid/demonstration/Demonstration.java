@@ -87,7 +87,11 @@ public class Demonstration implements Serializable {
     StringBuffer sb = new StringBuffer();
     //sb.append("External directory: " + mExternalDir.toString() + "\n");
     sb.append("Command: " + mCommand + "\n");
-    sb.append(mMotionEvents.toString());
+    //sb.append(mMotionEvents.toString());
+    for(MotionEvent ev : mMotionEvents) {
+      sb.append(ev.toString() + " x: " + ev.getRawX() + " y: " + ev.getRawY());
+    }
+    
     sb.append(mKeyEvents.toString());
     return sb.toString();
   }
