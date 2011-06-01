@@ -66,6 +66,8 @@ import com.todoroo.astrid.service.TaskService;
 import com.todoroo.astrid.timers.TimerDecorationExposer;
 import com.todoroo.astrid.utility.Constants;
 
+import android.util.Log;
+
 /**
  * Adapter for displaying a user's tasks as a list
  *
@@ -818,12 +820,22 @@ public class TaskAdapter extends CursorAdapter implements Filterable {
 
         @Override
         public void onClick(View v) {
-            // expand view (unless deleted)
             final ViewHolder viewHolder = (ViewHolder)v.getTag();
             if(viewHolder.task.isDeleted())
                 return;
 
             long taskId = viewHolder.task.getId();
+
+            // expand view (unless deleted)
+            //XXX
+            Log.i("TaskAdapter", "onClick() ! This is where the context menu gets popped up.");
+            long itemId = viewHolder.task.getId();
+            Intent intent2 = new Intent(activity, TaskEditActivity.class);
+            intent2.putExtra(TaskEditActivity.TOKEN_ID, itemId);
+            activity.startActivityForResult(intent2, TaskListActivity.ACTIVITY_EDIT_TASK);
+            if(true) return;
+
+
 
             if(isIntroTask(viewHolder.task)) {
                 Intent intent = new Intent(ContextManager.getContext(), NoteViewingActivity.class);

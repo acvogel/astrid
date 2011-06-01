@@ -16,6 +16,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /** Holds key presses and voice actions taken during a demonstration. */
 public class Demonstration implements Serializable {
@@ -63,11 +65,33 @@ public class Demonstration implements Serializable {
     //mLocation = 0;
   }
 
+  /** Computes a score of how much command matches mCommand. Currently it's word overlap, case insensitive. */
+  public int overlapScore(String command) {
+    int score = 0;
+    String [] argWords = command.split("\\s");
+    String [] myWords = mCommand.split("\\s");
+    Set<String> overlap = new HashSet<String>();
+    for(String argString : argWords) {
+      for(String myString : myWords) {
+        if(argString.equals(myString)) {
+          score++;
+          overlap.add(argString);
+          break; // ensures that a duplicate match doesn't get over-counted.
+        }
+      }
+    }
+    return score;
+  }
+
   public String toString() {
     StringBuffer sb = new StringBuffer();
     //sb.append("External directory: " + mExternalDir.toString() + "\n");
     sb.append("Command: " + mCommand + "\n");
-    sb.append(mMotionEvents.toString());
+    //sb.append(mMotionEvents.toString());
+    for(MotionEvent ev : mMotionEvents) {
+      sb.append(ev.toString() + " x: " + ev.getRawX() + " y: " + ev.getRawY());
+    }
+    
     sb.append(mKeyEvents.toString());
     return sb.toString();
   }

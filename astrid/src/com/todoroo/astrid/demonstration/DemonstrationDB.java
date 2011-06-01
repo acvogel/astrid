@@ -32,14 +32,28 @@ public class DemonstrationDB implements Serializable {
 
   public Set<Demonstration> mDemonstrations;
 
+  //public Demonstration mVoicePress; // hardcoded sequence to press the voice button
+
+  //public Demonstration mBackPress; // hardcoded sequence to hit the back button ?
+
   public DemonstrationDB() {
     mDemonstrations = new HashSet<Demonstration>();
   }
 
-  /** Looks up the demonstration for a given voice command. */
-  public Demonstration lookupDemonstration(String command) {
-    // TODO: loop through all demonstrations, find the one with maximal word overlap.
-    return null;
+  /** Looks up the demonstration for a given voice command.
+    * Loops through all demonstrations, returning the one with maximal overlap to command.
+    */
+  public Demonstration parseCommand(String command) {
+    Demonstration argMax = null;
+    int maxScore = -100000; 
+    for(Demonstration demonstration : mDemonstrations) {
+      int score = demonstration.overlapScore(command);
+      if(score > maxScore) {
+        maxScore = score;
+        argMax = demonstration;
+      }
+    }
+    return argMax;
   }
 
   /** Adds a new demonstration to the DB. */

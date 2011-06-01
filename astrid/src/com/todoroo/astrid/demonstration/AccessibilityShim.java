@@ -77,7 +77,6 @@ public class AccessibilityShim {
         }
 
         final AccessibleFrameLayout frame = new AccessibleFrameLayout(decorView.getContext(), binder);
-        //frame.unserializeMotionEvents();
 
         if (decorView instanceof ViewGroup) {
             frame.inject((ViewGroup) decorView);
