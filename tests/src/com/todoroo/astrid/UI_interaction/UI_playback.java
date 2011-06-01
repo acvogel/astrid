@@ -61,12 +61,16 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
 
             int parcel_size = evList.size();
             for (int i = 0; i < parcel_size; i++){
-//                MotionEvent currentEvent = evList.get(i);
-//                currentEvent.offsetLocation(xOffset, yOffset);
-//                inst.sendPointerSync(currentEvent);
-                inst.sendPointerSync(evList.get(i));
-//                if (lastEventTime != -1)
-//                    Thread.sleep(currentEvent.getEventTime()-lastEventTime);
+                MotionEvent currentEvent = evList.get(i);
+                currentEvent.offsetLocation(xOffset, yOffset);
+                inst.sendPointerSync(currentEvent);
+                long waitDuration = currentEvent.getEventTime()-lastEventTime;
+                System.out.println("wait duration = " + waitDuration);
+                if (lastEventTime != -1 && waitDuration > 0){
+                    Thread.sleep(waitDuration);
+                }
+                lastEventTime = currentEvent.getEventTime();
+                //Thread.sleep(3000);
             }
         }
     }
