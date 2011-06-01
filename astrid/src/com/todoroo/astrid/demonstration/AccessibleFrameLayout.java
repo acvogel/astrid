@@ -432,6 +432,9 @@ public class AccessibleFrameLayout extends FrameLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Log.i(LOG_STRING,"touch event: " + ev.toString());
+          //+ " eventTime: " + ev.getEventTime() + " downtime: " + ev.getDownTime());
+        //  + " xraw: " + ev.getRawX() +" x: "+ev.getX()
+        //  + " yraw: " + ev.getRawY() +" y: "+ev.getY());
         //mDemonstration.addMotionEvent(ev);
         Parcel parcel = Parcel.obtain();
         parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);

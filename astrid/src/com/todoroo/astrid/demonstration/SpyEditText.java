@@ -32,14 +32,17 @@ import android.view.MotionEvent;
 import android.util.AttributeSet;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.EditorInfo;
+import android.graphics.Rect;
+
 
 public class SpyEditText extends EditText {
   private static final String LOG_STRING = "SpyEditText";
 
-  //private boolean mTouched = false; // whether this field has been touched yet
+  private int mTouched = 0; // whether this field has been touched yet
   //private boolean mEdited = false; // whether this field has been edited
   private IBinder mBinder = null; // how we communicate to automation
   private boolean mEditInProgress = false;
+  private boolean mKeyboardVisible = false;
 
   public SpyEditText(Context context) {
     super(context); 
@@ -67,7 +70,8 @@ public class SpyEditText extends EditText {
   }
 
   public boolean dispatchTouchEvent(MotionEvent event) {
-    //Log.i(LOG_STRING, " Touch event: " + event.toString());
+    mTouched++;
+    Log.i(LOG_STRING, " Touch event: " + event.toString());
     if(didTouchFocusSelect()) {
       Log.i(LOG_STRING, " FOCUS SELECT");
       mEditInProgress = true;
@@ -78,17 +82,35 @@ public class SpyEditText extends EditText {
       } catch(RemoteException e) {
         Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
       }
-      // this is the money!
     }
     return super.dispatchTouchEvent(event);
   }
 
   public void onEditorAction(int actionCode) {
     Log.i(LOG_STRING, " Edit event: " + actionCode);
+    super.onEditorAction(actionCode);
+  }
+
+  @Override
+  public void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+    Log.i(LOG_STRING, "Focus changed. focused: " + focused + " direction: " + direction+ " rect: " + previouslyFocusedRect);
+    if(mTouched>1 && focused) {
+      mEditInProgress = true;
+      Log.i(LOG_STRING, "BEST BET AT KEYBOARD NOW BEING VISIBLE");
+      try {
+        Parcel parcel = Parcel.obtain();
+        parcel.writeString("EDIT TEXT");
+        mBinder.transact(DemonstrationService.EDIT_TEXT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+      } catch(RemoteException e) {
+        Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+      }
+    }
+    super.onFocusChanged(focused, direction, previouslyFocusedRect);
   }
 
   protected void onTextChanged (CharSequence text, int start, int before, int after) {
-    if(mEditInProgress) {
+    Log.i(LOG_STRING, "Text changed");
+    if(mEditInProgress && mTouched>1) {
       mEditInProgress = false;
       try {
         Parcel parcel = Parcel.obtain();
@@ -102,7 +124,6 @@ public class SpyEditText extends EditText {
     }
     super.onTextChanged(text, start, before, after);
   }
-
 
 }
 

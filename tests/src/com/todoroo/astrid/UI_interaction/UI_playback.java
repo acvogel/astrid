@@ -30,6 +30,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         mBinder = mActivity.getBinder();
 
     }
+    // 70
 
     public void test_UI() throws InterruptedException {
 
@@ -55,7 +56,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
             int parcel_size = evList.size();
             for (int i = 0; i < parcel_size; i++){
                 inst.sendPointerSync(evList.get(i));
-                Thread.sleep(10);
+                Thread.sleep(1000);
             }
         }
     }

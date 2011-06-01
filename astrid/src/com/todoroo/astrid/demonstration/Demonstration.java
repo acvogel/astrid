@@ -89,7 +89,7 @@ public class Demonstration implements Serializable {
     sb.append("Command: " + mCommand + "\n");
     //sb.append(mMotionEvents.toString());
     for(MotionEvent ev : mMotionEvents) {
-      sb.append(ev.toString() + " x: " + ev.getRawX() + " y: " + ev.getRawY());
+      sb.append(ev.toString() + " eventTime: " + ev.getEventTime() + " downtime: " + ev.getDownTime());
     }
     
     sb.append(mKeyEvents.toString());
