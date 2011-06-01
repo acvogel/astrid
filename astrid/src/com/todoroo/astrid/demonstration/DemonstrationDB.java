@@ -23,6 +23,15 @@ import android.widget.Toast;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+/*
+back button:
+I/AcessibleFrameLayout( 7774): key event: KeyEvent{action=0 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
+I/AcessibleFrameLayout( 7774): key event: KeyEvent{action=1 code=4 repeat=0 meta=0 scancode=158 mFlags=72}
+
+microphone press:
+
+*/
+
 
 /** Holds a collection of Demonstrations. Provides capability for editing, accessing, and storing. */
 public class DemonstrationDB implements Serializable {

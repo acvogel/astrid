@@ -209,6 +209,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
             Log.i(LOG_STRING, "onServiceConnect()from ServiceConnection.");
             mBinder = (DemonstrationService.DemonstrationBinder) service;
             mService = mBinder.getService();
+            quickAddBox.setBinder(mBinder);
             attachShim(); // now that we have the binder, fire up the shim.
             mBound = true;
             // now send the external file directory to the DemonstrationServer.

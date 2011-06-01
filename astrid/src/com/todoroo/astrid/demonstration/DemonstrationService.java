@@ -221,6 +221,19 @@ public class DemonstrationService extends IntentService {
         
         case EDIT_TEXT_CODE:
           Log.i(LOG_STRING, "A text box has been edited. Now add the microphone input thing to the demonstration.");
+          // basically want to make the special motion events to click the microphone.
+          // step 1: try to get their values.
+/*
+I/SpyEditText( 8452):  Touch event: MotionEvent{448a9268 action=2 x=128.0254 y=24.572937 pressure=0.07450981 size=0.2}
+I/AcessibleFrameLayout( 8452): touch event: MotionEvent{448142c8 action=2 x=128.0254 y=808.57294 pressure=0.05882353 size=0.2}
+I/SpyEditText( 8452):  Touch event: MotionEvent{448142c8 action=2 x=128.0254 y=24.572937 pressure=0.05882353 size=0.2}
+I/AcessibleFrameLayout( 8452): touch event: MotionEvent{448a9268 action=1 x=128.0254 y=808.57294 pressure=0.05882353 size=0.2}
+I/SpyEditText( 8452):  Touch event: MotionEvent{448a9268 action=1 x=128.0254 y=24.572937 pressure=0.05882353 size=0.2}
+*/
+          MotionEvent ev1 = MotionEvent.obtain(2L, 0L, 2, 128.0F, 820.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
+          MotionEvent ev2 = MotionEvent.obtain(3L, 0L, 1, 128.0F, 820.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
+          mDemonstration.addMotionEvent(ev1);
+          mDemonstration.addMotionEvent(ev2);
           break;
 
         default:
