@@ -14,6 +14,9 @@ import com.todoroo.astrid.demonstration.DemonstrationService;
 
 public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivity> {
 
+    private final float xOffset = 0;
+    private final float yOffset = 0;
+
     private TaskListActivity mActivity;
     private TextToSpeech mTts;
     private DemonstrationService.DemonstrationBinder mBinder;
@@ -52,10 +55,17 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
 
             Instrumentation inst = getInstrumentation();
 
+            // used to see the time difference between events
+            long lastEventTime = -1;
+
             int parcel_size = evList.size();
             for (int i = 0; i < parcel_size; i++){
+//                MotionEvent currentEvent = evList.get(i);
+//                currentEvent.offsetLocation(xOffset, yOffset);
+//                inst.sendPointerSync(currentEvent);
                 inst.sendPointerSync(evList.get(i));
-                Thread.sleep(10);
+//                if (lastEventTime != -1)
+//                    Thread.sleep(currentEvent.getEventTime()-lastEventTime);
             }
         }
     }
