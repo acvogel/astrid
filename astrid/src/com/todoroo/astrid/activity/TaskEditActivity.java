@@ -29,21 +29,31 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.RemoteException;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -74,6 +84,10 @@ import com.todoroo.astrid.alarms.AlarmControlSet;
 import com.todoroo.astrid.api.AstridApiConstants;
 import com.todoroo.astrid.dao.Database;
 import com.todoroo.astrid.data.Task;
+import com.todoroo.astrid.demonstration.AccessibilityShim;
+import com.todoroo.astrid.demonstration.DemonstrationService;
+import com.todoroo.astrid.demonstration.SpyEditText;
+import com.todoroo.astrid.demonstration.SpyImageButton;
 import com.todoroo.astrid.gcal.GCalControlSet;
 import com.todoroo.astrid.producteev.ProducteevControlSet;
 import com.todoroo.astrid.producteev.ProducteevUtilities;
@@ -90,25 +104,6 @@ import com.todoroo.astrid.ui.CalendarDialog;
 import com.todoroo.astrid.ui.DeadlineTimePickerDialog;
 import com.todoroo.astrid.ui.DeadlineTimePickerDialog.OnDeadlineTimeSetListener;
 import com.todoroo.astrid.voice.VoiceInputAssistant;
-
-import com.todoroo.astrid.demonstration.*;
-import android.content.ServiceConnection;
-import android.app.IntentService;
-import android.content.Intent;
-import android.content.ComponentName;
-import android.os.Binder;
-import android.os.IBinder;
-import android.util.Log;
-import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.RemoteException;
-import android.view.MotionEvent;
-import android.speech.*;
-import android.speech.tts.*;
-import android.view.View.OnKeyListener;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 
 /**
@@ -213,13 +208,13 @@ public final class TaskEditActivity extends TabActivity {
     private DemonstrationService mService;
     private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
-    private String LOG_STRING = "TaskEditActivity";
+    private final String LOG_STRING = "TaskEditActivity";
 
     private SpeechRecognizer mSpeechRecognizer = null;
     private SpeechListener mSpeechListener = null;
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -249,7 +244,7 @@ public final class TaskEditActivity extends TabActivity {
       if(!start) {
           //mTextView.setText("making it happen");
           //RecognizerIntent recognizerIntent = new RecognizerIntent();
-          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
           intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
           intent.putExtra("calling_package","com.todoroo.astrid.activity.TaskEditActivity");
@@ -296,7 +291,7 @@ public final class TaskEditActivity extends TabActivity {
         } catch(RemoteException e) {
           Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
         }
-      } 
+      }
       public void onRmsChanged(float rmsdB) {
       }
     }
@@ -333,7 +328,7 @@ public final class TaskEditActivity extends TabActivity {
       Log.e(LOG_STRING, "Success of binding to service: " + success);
     }
 
-    // set up speech 
+    // set up speech
     mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
     mSpeechListener = new SpeechListener();
     mSpeechRecognizer.setRecognitionListener(mSpeechListener);
@@ -476,7 +471,7 @@ public final class TaskEditActivity extends TabActivity {
                   parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                   try {
                     if(mBinder == null) {
-                      Log.e(LOG_STRING, "Null binder!"); 
+                      Log.e(LOG_STRING, "Null binder!");
                     }
                     mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
                   } catch (RemoteException e) {
@@ -495,7 +490,7 @@ public final class TaskEditActivity extends TabActivity {
                   parcel.writeParcelable(ev, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
                   try {
                     if(mBinder == null) {
-                      Log.e(LOG_STRING, "Null binder!"); 
+                      Log.e(LOG_STRING, "Null binder!");
                     }
                     mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
                   } catch (RemoteException e) {
