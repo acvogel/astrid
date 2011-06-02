@@ -59,24 +59,6 @@
         android:id="@+id/urgency"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-                
-      <!-- tags -->
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/TEA_tags_label"
-        style="@style/TextAppearance.GEN_EditLabel" />
-      <LinearLayout
-        android:id="@+id/tags_container"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-      <Spinner
-        android:id="@+id/tags_dropdown"
-        android:paddingBottom="5dip"
-        android:entries="@array/TEA_loading"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
               
       <!-- separator -->
       <View
@@ -152,6 +134,26 @@
           android:src="@drawable/tango_stop" 
           android:contentDescription="cancel"/>
       </LinearLayout>
+      
+      <!-- tags -->
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TEA_tags_label"
+        android:visibility="gone" />
+      <LinearLayout
+        android:id="@+id/tags_container"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+      <Spinner
+        android:id="@+id/tags_dropdown"
+        android:paddingBottom="5dip"
+        android:entries="@array/TEA_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
     </LinearLayout>
   </ScrollView>
 
@@ -187,16 +189,19 @@
       <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:visibility="gone">
         <CheckBox
           android:id="@+id/reminder_random"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/TEA_reminder_random" />
+          android:text="@string/TEA_reminder_random" 
+          android:visibility="gone"/>
         <Spinner
           android:id="@+id/reminder_random_interval"
           android:layout_width="fill_parent"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content" 
+          android:visibility="gone"/>
       </LinearLayout>
         
       <!-- reminder mode -->
@@ -204,29 +209,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/TEA_reminder_alarm_label"
-        style="@style/TextAppearance.GEN_EditLabel" />
+        style="@style/TextAppearance.GEN_EditLabel" 
+        android:visibility="gone" />
       <Spinner
         android:id="@+id/reminder_alarm"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" 
+        android:visibility="gone" />
         
       <!-- separator -->
       <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:padding="5dip"
-        android:background="@android:drawable/divider_horizontal_dark" />
+        android:background="@android:drawable/divider_horizontal_dark" 
+        android:visibility="gone"/>
 
       <!-- hide until -->
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/TEA_hideUntil_label"
-        style="@style/TextAppearance.GEN_EditLabel" />
+        style="@style/TextAppearance.GEN_EditLabel" 
+        android:visibility="gone" />
       <Spinner
         android:id="@+id/hideUntil"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" 
+        android:visibility="gone" />
         
       <!-- add-ons -->
       <LinearLayout android:id="@+id/tab_extra_addons"
