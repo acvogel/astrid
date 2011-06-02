@@ -21,6 +21,8 @@ import android.widget.Toast;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import android.speech.tts.*;
+
 
 
 
@@ -54,6 +56,8 @@ public class DemonstrationService extends IntentService {
   /** Whether the instrumentation program has contact the service. */
   private boolean mTestConnected = false;
 
+  private TextToSpeech mTextToSpeech = null;
+
   private List<Demonstration> mDemonstrationList; // stored demonstrations. needs to be serialized.
 
   //public Demonstration mCommandToRun; // holds the current command
@@ -77,6 +81,12 @@ public class DemonstrationService extends IntentService {
     
     // do reading and writing here.
     //unserializeDemonstrationDB();
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    mTextToSpeech = new TextToSpeech(this.getApplicationContext(), null);
   }
 
   @Override
@@ -191,6 +201,7 @@ public class DemonstrationService extends IntentService {
             if(mTestConnected) { // in playback mode.
               String command = data.readString();
               mDemonstration = mDemonstrationDB.parseCommand(command);
+              mTextToSpeech.speak(mDemonstration.mCommand, 0, null);
               Log.i(LOG_STRING, "Parsed command \"" + command + "\" to demonstration " + mDemonstration);
               mPlaybackReady = true; // have a demonstration to send to the server
             } else { // go into capture mode.
@@ -198,6 +209,7 @@ public class DemonstrationService extends IntentService {
               mDemonstration = new Demonstration();
               mDemonstration.setCommand(command);
               Log.i(LOG_STRING, "Starting to record demonstration with command: " + command);
+              mTextToSpeech.speak("Recording command " + command, 0, null);
               mRecord = true;
             }
           } else {
