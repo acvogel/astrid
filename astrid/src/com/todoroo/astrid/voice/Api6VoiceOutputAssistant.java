@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
-import android.util.Log;
 
 import com.todoroo.andlib.service.ContextManager;
 import com.todoroo.astrid.voice.VoiceOutputService.VoiceOutputAssistant;
@@ -97,13 +96,13 @@ public class Api6VoiceOutputAssistant implements OnInitListener, VoiceOutputAssi
         if (status == TextToSpeech.SUCCESS) {
             // Set preferred language to US english.
             // Note that a language may not be available, and the result will indicate this.
-            int result = mTts.setLanguage(Locale.getDefault());
+            int result = mTts.setLanguage(Locale.US);
             // Try this someday for some interesting results.
             // int result mTts.setLanguage(Locale.FRANCE);
             if (result == TextToSpeech.LANG_MISSING_DATA ||
                 result == TextToSpeech.LANG_NOT_SUPPORTED) {
                // Language data is missing or the language is not supported.
-                Log.e(TAG, "Language is not available.");
+                System.out.println("Language is not available!");
             } else {
                 // Check the documentation for other possible result codes.
                 // For example, the language may be available for the locale,
@@ -122,7 +121,7 @@ public class Api6VoiceOutputAssistant implements OnInitListener, VoiceOutputAssi
             }
         } else {
             // Initialization failed.
-            Log.e(TAG, "Could not initialize TextToSpeech.");
+            System.out.println("Could not initialize TextToSpeech.");
         }
     }
 

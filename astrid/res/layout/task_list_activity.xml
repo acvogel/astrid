@@ -24,7 +24,8 @@
             android:scaleType="center"
             android:paddingLeft="5dip" 
             android:paddingRight="5dip"
-            android:contentDescription="go back"/> 
+            android:contentDescription="go back"
+            android:focusable="true"/> 
         
         <!-- List Label -->
         <TextView android:id="@+id/listLabel"
