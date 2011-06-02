@@ -162,6 +162,16 @@
 
     <!-- ======================================================== Services = -->
 
+    <!-- Declares the input method service -->
+    <service android:name="com.todoroo.astrid.demonstration.VoiceKeyboard"
+                 android:label="Voice Keyboard"
+                 android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/method" />
+        </service>
+
     <service android:name="com.todoroo.astrid.widget.TasksWidget$UpdateService" />
     <service android:name="com.todoroo.astrid.demonstration.ASRService" 
              android:permission="android.permission.RECORD_AUDIO"/>

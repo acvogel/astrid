@@ -230,10 +230,26 @@ I/SpyEditText( 8452):  Touch event: MotionEvent{448142c8 action=2 x=128.0254 y=2
 I/AcessibleFrameLayout( 8452): touch event: MotionEvent{448a9268 action=1 x=128.0254 y=808.57294 pressure=0.05882353 size=0.2}
 I/SpyEditText( 8452):  Touch event: MotionEvent{448a9268 action=1 x=128.0254 y=24.572937 pressure=0.05882353 size=0.2}
 */
-          MotionEvent ev1 = MotionEvent.obtain(2L, 0L, 2, 128.0F, 820.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
-          MotionEvent ev2 = MotionEvent.obtain(3L, 0L, 1, 128.0F, 820.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
-          mDemonstration.addMotionEvent(ev1);
-          mDemonstration.addMotionEvent(ev2);
+          // XXX disabled sending click event.
+//MotionEvent{448cb898 action=0 x=117.59146 y=36.349976 pressure=0.08627451 size=0.2}
+          //MotionEvent previousEvent = mDemonstration.getLastMotionEvent();
+          //long startTime;
+          //if(previousEvent != null)
+          //  startTime =  previousEvent.getEventTime();
+          //else
+          //  startTime = 0;
+          //
+          //long increment = 100;
+          //long currentTime = startTime;
+          //MotionEvent ev0 = MotionEvent.obtain(startTime, currentTime, 0, 128.0F, 700.0F,  0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
+          //currentTime += increment;
+          //MotionEvent ev1 = MotionEvent.obtain(startTime, currentTime, 2, 128.0F, 700.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
+          //currentTime += increment;
+          //MotionEvent ev2 = MotionEvent.obtain(startTime, currentTime, 1, 128.0F, 700.0F, 0.074509F, 0.2F, 0, 1.0F, 1.0F, 0, 0);
+          //mDemonstration.addMotionEvent(ev0);
+          //mDemonstration.addMotionEvent(ev1);
+          //mDemonstration.addMotionEvent(ev2);
+          //Log.i(LOG_STRING, "After keyboard event, the demonstration is: " + mDemonstration.toString());
           break;
 
         default:

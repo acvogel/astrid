@@ -65,6 +65,15 @@ public class Demonstration implements Serializable {
     //mLocation = 0;
   }
 
+  public MotionEvent getLastMotionEvent() {
+    int length = mMotionEvents.size();
+    if(length > 0) {
+      return mMotionEvents.get(length-1);
+    } else {
+      return null;
+    }
+  }
+
   /** Computes a score of how much command matches mCommand. Currently it's word overlap, case insensitive. */
   public int overlapScore(String command) {
     int score = 0;
