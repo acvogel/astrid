@@ -53,7 +53,6 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         //return;
 
 
-
         while (true){
             Thread.sleep(1000);
 
@@ -100,6 +99,8 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
     }
 
     protected void readScreen() throws InterruptedException{
+
+        Thread.sleep(500);
 
         System.out.println("Reading screen.");
 
