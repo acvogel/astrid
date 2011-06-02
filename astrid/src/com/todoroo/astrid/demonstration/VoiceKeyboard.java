@@ -1,5 +1,6 @@
 package com.todoroo.astrid.demonstration;
 
+import android.view.View;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.speech.*;
@@ -46,15 +47,17 @@ public class VoiceKeyboard extends InputMethodService {
     //    intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
     //    //startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     //    startActivity(intent);
-    mTextToSpeech.speak("Speak!", 0, null);
 
-    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-          intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                  RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-          intent.putExtra("calling_package","com.todoroo.astrid.demonstration.VoiceKeyboard");
-          //mSpeechRecognizer.startListening(intent);
-          //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
-          mSpeechRecognizer.startListening(intent);
+    // XXX moved
+    //mTextToSpeech.speak("Speak!", 0, null);
+
+    //Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+    //      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+    //              RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+    //      intent.putExtra("calling_package","com.todoroo.astrid.demonstration.VoiceKeyboard");
+    //      //mSpeechRecognizer.startListening(intent);
+    //      //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+    //      mSpeechRecognizer.startListening(intent);
     
   }
 
@@ -82,9 +85,32 @@ public class VoiceKeyboard extends InputMethodService {
         InputConnection ic = getCurrentInputConnection();
         ic.deleteSurroundingText(1000,1000);
         ic.commitText(result, 1);
+        ic.finishComposingText();
       }
       public void onRmsChanged(float rmsdB) {
       }
+    }
+
+    @Override
+    public View onCreateInputView (){
+
+      Log.i(LOG_STRING, "on create input view");
+      return null;
+    }
+
+    public void onWindowShown () {
+      Log.i(LOG_STRING, "onWindowShown()");
+    mTextToSpeech.speak("Speak!", 0, null);
+
+    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+          intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                  RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+          intent.putExtra("calling_package","com.todoroo.astrid.demonstration.VoiceKeyboard");
+          //mSpeechRecognizer.startListening(intent);
+          //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+          mSpeechRecognizer.startListening(intent);
+
+    //  hideWindow (); // hide after you do it
     }
 
 }
