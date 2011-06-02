@@ -8,3 +8,13 @@ Tasks:
 - Go to advanced and toggle the reminder
 - Read current tasks
 - Check off a task
+
+
+
+Check for:
+- Time it takes to do with touch
+- Demonstration time
+- Time it takes to do with Voicify
+- Success rate with Voicify
+
+Informal interview afterwards
