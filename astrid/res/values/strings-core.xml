@@ -79,7 +79,8 @@
   <string name="TLA_menu_settings">Settings</string>
   
   <!-- Menu: Help -->    
-  <string name="TLA_menu_help">Help</string>
+  <!--<string name="TLA_menu_help">Help</string>-->
+  <string name="TLA_menu_help">VOICIFY</string>
   
   <!-- Search Label-->
   <string name="TLA_search_label">Search This List</string>
@@ -181,7 +182,8 @@
   <string name="FLA_menu_search">Search Tasks...</string>
   
   <!-- Menu: Help -->    
-  <string name="FLA_menu_help">Help</string>
+  <!--<string name="FLA_menu_help">Help</string>-->
+  <string name="FLA_menu_help">VOICIFY</string>
   
   <!-- Create Shortcut Dialog Title -->    
   <string name="FLA_shortcut_dialog_title">Create Shortcut</string>
