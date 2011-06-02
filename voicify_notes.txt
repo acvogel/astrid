@@ -1,0 +1,10 @@
+5 Minute Intro Period For App
+
+Tasks:
+- Create a new task
+- Edit the title of the task
+- Set priority to high
+- Add a note
+- Go to advanced and toggle the reminder
+- Read current tasks
+- Check off a task
