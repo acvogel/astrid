@@ -110,11 +110,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
 
         // still misses some views on the side
         while (focusChanged){
-            while (focusChanged){
-                this.readFocusedItem();
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_RIGHT);
-                focusChanged = this.isFocusChanged();
-            }
+            this.readFocusedItem();
             inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
             focusChanged = this.isFocusChanged();
         }
@@ -122,11 +118,6 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         focusChanged = true;
 
         // go up and left as long as focus changes
-        while (focusChanged){
-            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-            focusChanged = this.isFocusChanged();
-        }
-
         while (focusChanged){
             inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
             focusChanged = this.isFocusChanged();
