@@ -1,4 +1,10 @@
-5 Minute Intro Period For App
+Name:
+Gender:
+Age:
+Cellphone:
+Stanford department:
+Native language:
+
 
 Tasks:
 - Create a new task
@@ -6,26 +12,18 @@ Tasks:
 - Set priority to high
 - Add a note
 - Go to advanced and toggle the reminder
-- Read current tasks
-- Check off a task
+- Save the task
+- Check off the first task
 
+Times:
+ - Touch interface:
+ - Demonstration:
+ - Playback:
 
+Errors:
+ - Success Rate: (/7)
+ - Speech Recognition:
+ - UI error:
+ - Other:
 
-Check for:
-- Time it takes to do with touch
-- Demonstration time
-- Time it takes to do with Voicify
-- Success rate with Voicify
-
-Informal interview afterwards
-
-
-
-Gabriel Benarros, Portuguese, 22
-Touch time: 1:19
-Demo time: 2:48
-Voicify time: NA
-Success rate: NA
-- user will not care so much about detailed flexibility
--cascading is hard for people, people don't get that they should stop at a textbox and then have a command for after
-- people think that if they scroll the screen when it's not recording and demonstrate to click on a box, it will do that
+Notes:
