@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ListView;
 
 import com.todoroo.astrid.activity.TaskListActivity;
 import com.todoroo.astrid.demonstration.DemonstrationService;
@@ -49,9 +50,12 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
 
         // Testing
         //this.readScreen();
+        //return;
+
+
 
         while (true){
-            Thread.sleep(500);
+            Thread.sleep(1000);
 
             // code for polling the binder parcel
             Parcel reply = Parcel.obtain();
@@ -104,9 +108,11 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
         boolean focusChanged = true;
 
         // starting action determines what views get left out
-        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_LEFT);
-        //inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-        //inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_DOWN);
+        inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
+
+        View newFocusedView = mActivity.getCurrentFocus();
+        System.out.println(newFocusedView.toString());
+        if (!ListView.class.isInstance(newFocusedView)) return;
 
         // still misses some views on the side
         while (focusChanged){
@@ -115,13 +121,13 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
             focusChanged = this.isFocusChanged();
         }
 
-        focusChanged = true;
-
-        // go up and left as long as focus changes
-        while (focusChanged){
-            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-            focusChanged = this.isFocusChanged();
-        }
+//        focusChanged = true;
+//
+//        // go up and left as long as focus changes
+//        while (focusChanged){
+//            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
+//            focusChanged = this.isFocusChanged();
+//        }
     }
 
     protected void readFocusedItem() throws InterruptedException{
@@ -130,6 +136,8 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
 
         AccessibilityEvent event = AccessibilityEvent.obtain();
         focusedView.dispatchPopulateAccessibilityEvent(event);
+
+
 
         if (event != null){
             lastFocusedIndex = event.getCurrentItemIndex();
