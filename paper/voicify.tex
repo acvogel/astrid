@@ -21,9 +21,9 @@
 
 %\title{Standard UIST Conference Format:\\
 %       Preparing Camera-Ready Submissions}
-\title{Voicify: Creating User-Generated Mobile Speech Interfaces by Demonstration}
+\title{Voicify: User Demonstrated Voice Interfaces}
 
-\author{Adam Vogel \and Arda Kara}
+%\author{Adam Vogel \and Arda Kara}
 
 %%
 %% Note on formatting authors at different institutions, as shown below:
@@ -35,23 +35,18 @@
 %% Be sure NOT to put any blank lines between parbox commands!
 %%
 
-%\author{
-%\parbox[t]{9cm}{\centering
-%	     {\em Author One}\\
-%	     User Interface Laboratory\\
-%             ABC Corporation\\
-%	     1234 Anywhere Road\\
-%	     Anytown, NY 10027 USA\\
-%	     +1-212-555-1212\\
-%	     one@abc.com}
-%\parbox[t]{9cm}{\centering
-%	     {\em Author Two}\\
-%	     Universit\'{e} de XYZ\\
-%	     5678 rue des Parapluies\\
-%	     99099 Cr\`{e}me de Menthe, FRANCE\\
-%	     +33-12-34-56-78\\
-%	     deux@uvw.xyz.fr}
-%}
+\author{
+\parbox[t]{9cm}{\centering
+	     {\em Adam Vogel}\\
+     Computer Science Deparment\\
+             Stanford University \\
+	     av@cs.stanford.edu}
+\parbox[t]{9cm}{\centering
+	     {\em Arda Kara}\\
+	     Computer Science Department\\
+       Stanford University\\
+	     ardakara@stanford.edu}
+}
 
 \maketitle
 
@@ -71,19 +66,79 @@ However, our study also shows that most users find programming by demonstration 
 tedious, and that the natural language processing is too impoverished to be widely applicable.
 
 \section{Introduction}
+Speech interfaces have been gaining in popularity with the proliferation of mobile devices. Smartphones are
+frequently used in hands-free or eyes-free contexts, such as while driving or walking. Modern phones like
+the iPhone and Android phones include speech recognition and synthesis in the operating system, allowing
+users to make calls and send text messages by voice. However, there is a long tail of community authored
+phone applications which have no voice interface. This is a big restriction for the convenience of
+hands-free users and the sight disabled. 
+
+To address this problem, we introduce \emph{Voicify}, a framework for creating speech interfaces 
+through end-user demonstration. Voicify allows a user to create voice commands for Android
+applications through a ``tell and show'' interface: the user first \emph{tells} the phone what 
+to do in natural language and then \emph{shows} the phone how to interpret this command.
+Once the user has demonstrated commands, the phone can execute commands in a playback mode.
+
+We further explore the efficacy of user demonstration and the usability of the resulting
+interface by conducting a user study.  We \emph{voicified} a popular open-source Android todo list
+application called \emph{Astrid} (CITE). Using this version of Astrid, we tested the ease and
+competence of the demonstration and playback interfaces when compared to the traditional touch
+interface. Our results show that the voicified interfaces are usable, with a 60\% command interpretation
+success rate, but still fall below the level needed for wide usage. Our user study revealed
+several weaknesses in the demonstration interaction which we implemented.
+
+The remainder of the paper summarizes the large body of work on programming by demonstration, details
+the design and implementation of Voicify, and discusses the user study.
 
 \section{Related Work}
+Some other people did this shit too!
 
 \section{Programming by Demonstration}
+The Voicify framework requires three main components: the ability to capture low-level UI events, 
+an interface for recording demonstrations, and lastly the ability to playback commands for interpretation.
+
 \subsection{UI Capture}
+To record a command demonstration, Voicify requires access to the user interface actions that a user engages in.
+Security restrictions on the Android platform make it impossible for a 3rd party application to capture 
+touch and key events as this would enable malicious keyloggers to steal sensitive information. 
+The Android Accessibility Team (CITE) confirmed that this is impossible to do without modifying the operating system.
+To circumvent this problem, we chose an open-source application as a prototype, which allowed us to modify
+the program source itself, thus capturing UI events within the application.
+
+The UI design of Android still makes capturing UI events across a whole application a difficult task.
+Within each activity, the interface elements, called \emph{views}, are arranged in a tree structure. When the user
+touches the screen, the UI event is dispatched to the lowest element in the view tree which spans that portion of the 
+screen. It is then passed up the tree, until a UI element consumes it. To capture these touch events,
+we programatically traverse the view tree and insert an invisible UI layer at each node. The UI layer
+simply captures the UI interactions which pass through it.
+
+Furthermore, some UI widgets like buttons and dialog boxes consume touch events without passing them along
+to the activity in which they reside. Complicating matters, these boxes are required to be leaves
+of the view tree, which doesn't allow for our trick of inserting invisible layers. To deal with these issues
+we overrid the UI widget classes to capture the interactions. This required changing the UI definitions for
+each of the screens to use our modified versions. This challenges our goal of making Voicify applicable to
+every application but is a necessary hack for this prototype.
+
+Lastly, each screen in an Android application is run in its own process, which pauses when switching between
+screens in an application. This makes it difficult to share UI events across activities, which very naturally
+happens when demonstrating some commands. To overcome this we implemented a \emph{demonstration service} which runs in the background
+of the application and aggregates UI interactions across activities.
+
+When recording UI events, we capture low-level touches and key preses.
+
+%TODO: figure for the demonstration service?
 
 \subsection{Demonstration Interface}
 
 \subsection{Playback Interface}
+
+
+
+
 \begin{enumerate}
 \item Screen reader
 \item Voice keyboard
-\item Natural langage processing for command interpretation
+\item Natural language processing for command interpretation
 \end{enumerate}
 
 \section{Experimental Evaluation}
