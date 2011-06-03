@@ -1,0 +1,100 @@
+
+\documentclass[letterpaper]{article}
+
+
+
+\usepackage{times}
+\usepackage{uist}
+
+\begin{document}
+
+% --- Copyright notice ---
+\conferenceinfo{UIST'09}{October 4-7, 2009, Victoria, British Columbia, Canada}
+\CopyrightYear{2009}
+\crdata{978-1-60558-745-5/09/10}
+
+% Uncomment the following line to hide the copyright notice
+% \toappear{}
+% ------------------------
+
+\bibliographystyle{plain}
+
+%\title{Standard UIST Conference Format:\\
+%       Preparing Camera-Ready Submissions}
+\title{Voicify: Creating User-Generated Mobile Speech Interfaces by Demonstration}
+
+\author{Adam Vogel \and Arda Kara}
+
+%%
+%% Note on formatting authors at different institutions, as shown below:
+%% Change width arg (currently 7cm) to parbox commands as needed to
+%% accommodate widest lines, taking care not to overflow the 17.8cm line width.
+%% Add or delete parboxes for additional authors at different institutions. 
+%% If additional authors won't fit in one row, you can add a "\\"  at the
+%% end of a parbox's closing "}" to have the next parbox start a new row.
+%% Be sure NOT to put any blank lines between parbox commands!
+%%
+
+%\author{
+%\parbox[t]{9cm}{\centering
+%	     {\em Author One}\\
+%	     User Interface Laboratory\\
+%             ABC Corporation\\
+%	     1234 Anywhere Road\\
+%	     Anytown, NY 10027 USA\\
+%	     +1-212-555-1212\\
+%	     one@abc.com}
+%\parbox[t]{9cm}{\centering
+%	     {\em Author Two}\\
+%	     Universit\'{e} de XYZ\\
+%	     5678 rue des Parapluies\\
+%	     99099 Cr\`{e}me de Menthe, FRANCE\\
+%	     +33-12-34-56-78\\
+%	     deux@uvw.xyz.fr}
+%}
+
+\maketitle
+
+\abstract
+%Although voice interfaces exist for the main functions of modern mobile phones, many community-developed 
+%applications lack speech support. 
+We present \emph{Voicify}, a framework for voice programing by 
+demonstration which enables users to build their own speech interfaces.
+The user creates their own voice interface by demonstration a voice command with the corresponding
+actions to take on the phone. The phone can then be put in a hands-free mode, where it
+responds to previously programmed voice commands. 
+Transparency is a key issue, and we discuss the development of a voice-only keyboard for
+text entry paired with a custom screen reader for giving feedback to the user.
+We conducted a user study which shows that
+interfaces created using Voicify rival their touch counterparts.
+However, our study also shows that most users find programming by demonstration to be
+tedious, and that the natural language processing is too impoverished to be widely applicable.
+
+\section{Introduction}
+
+\section{Related Work}
+
+\section{Programming by Demonstration}
+\subsection{UI Capture}
+
+\subsection{Demonstration Interface}
+
+\subsection{Playback Interface}
+\begin{enumerate}
+\item Screen reader
+\item Voice keyboard
+\item Natural langage processing for command interpretation
+\end{enumerate}
+
+\section{Experimental Evaluation}
+\subsection{Experimental Design}
+
+\subsection{Results}
+
+\subsection{Discussion}
+
+\section{Conclusion and Future Work}
+
+
+
+\end{document}

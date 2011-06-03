@@ -50,6 +50,9 @@ public class VoiceKeyboard extends InputMethodService {
 
     // XXX moved
     mTextToSpeech.speak("Speak!", 0, null);
+    try {
+      Thread.sleep(500);
+    } catch (Exception e) {}
 
     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
           intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,

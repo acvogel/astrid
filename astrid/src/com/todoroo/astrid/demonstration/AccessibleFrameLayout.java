@@ -419,8 +419,53 @@ public class AccessibleFrameLayout extends FrameLayout {
     @Override 
     public boolean dispatchKeyEvent(KeyEvent ev) {
       Log.i(LOG_STRING, "key event: " + ev.toString());
+      int code = ev.getKeyCode();
+      int action = ev.getAction();
+      if(code == 80 && action == 1) {
+        //Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
+        super.dispatchKeyEvent(ev);
+     //       Parcel reply = Parcel.obtain();
+     //       boolean record = false;
+     //       try {
+     //         mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+     //         record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+     //       } catch (RemoteException e) {
+     //         Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+     //       }
+     //       onRecord(record);
+        return true;
+      }
+
+     // I/AcessibleFrameLayout( 2081): key event: KeyEvent{action=0 code=80 repeat=0 meta=0 scancode=211 mFlags=8}
+     // I/AcessibleFrameLayout( 2081): key event: KeyEvent{action=1 code=80 repeat=0 meta=0 scancode=211 mFlags=8}
+
+      
       return super.dispatchKeyEvent(ev);
     }
+
+    //private void onRecord(boolean start) {
+    //  if(!start) {
+    //      //mTextView.setText("making it happen");
+    //      //RecognizerIntent recognizerIntent = new RecognizerIntent();
+    //      Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+    //      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+    //              RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+    //      intent.putExtra("calling_package","com.todoroo.astrid.activity.FilterListActivity");
+    //      //mSpeechRecognizer.startListening(intent);
+    //      //startActivityForResult(intent, REQUEST_CODE_VOICE_SEARCH);
+    //      mSpeechRecognizer.startListening(intent);
+    //  } else {
+    //    mSpeechRecognizer.stopListening();
+    //    try {
+    //      Parcel parcel = Parcel.obtain();
+    //      parcel.writeString("STOP RECORDING");
+    //      mBinder.transact(DemonstrationService.TOGGLE_CODE, parcel, null, IBinder.FLAG_ONEWAY);
+    //    } catch(RemoteException e) {
+    //      Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
+    //    }
+    //    //mTextView.setText("ain't happening no more");
+    //  }
+    //}
 
     @Override
     public boolean dispatchTrackballEvent (MotionEvent ev) {

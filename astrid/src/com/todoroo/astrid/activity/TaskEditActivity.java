@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.view.KeyEvent;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -239,6 +240,40 @@ public final class TaskEditActivity extends TabActivity {
       AccessibilityShim.attachToActivity(this, mBinder);
     }
 
+    public boolean  dispatchKeyEvent(KeyEvent ev) {
+      int code = ev.getKeyCode();
+      int action = ev.getAction();
+      if(code == 80 && action == 1) {
+        Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
+            Parcel reply = Parcel.obtain();
+            boolean record = false;
+            try {
+              mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+              record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+            } catch (RemoteException e) {
+              Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+            }
+            if(!record) {
+               Context context = getApplicationContext();
+               CharSequence text = "Demonstrate";
+               int duration = Toast.LENGTH_SHORT;
+               
+               Toast toast = Toast.makeText(context, text, duration);
+               toast.show();
+            } else {
+               Context context = getApplicationContext();
+               CharSequence text = "Demonstration saved";
+               int duration = Toast.LENGTH_SHORT;
+               
+               Toast toast = Toast.makeText(context, text, duration);
+               toast.show();
+            }
+            onRecord(record);
+        super.dispatchKeyEvent(ev);
+        return true;
+      }
+      return super.dispatchKeyEvent(ev);
+    }
 
     private void onRecord(boolean start) {
       if(!start) {
