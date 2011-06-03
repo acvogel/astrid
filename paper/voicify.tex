@@ -53,9 +53,9 @@
 \abstract
 %Although voice interfaces exist for the main functions of modern mobile phones, many community-developed 
 %applications lack speech support. 
-We present \emph{Voicify}, a framework for voice programing by 
+We present \emph{Voicify}, a framework for voice programming by 
 demonstration which enables users to build their own speech interfaces.
-The user creates their own voice interface by demonstration a voice command with the corresponding
+The user creates their own voice interface by demosntrating a voice command with the corresponding
 actions to take on the phone. The phone can then be put in a hands-free mode, where it
 responds to previously programmed voice commands. 
 Transparency is a key issue, and we discuss the development of a voice-only keyboard for
@@ -131,12 +131,23 @@ When recording UI events, we capture low-level touches and key preses.
 \subsection{Demonstration Interface}
 
 \subsection{Playback Interface}
-
-
-
-
+The Android operating system employs a sandbox-based security framework that prevents any interaction between applications. 
+Each application has its own virtual machine, which makes it more difficult to implement a system-wide voice control interface without modifying the OS.
+Our workaround was to use the UI testing features of the built-in unit testing tools that come with the Android SDK.
+One downside of this approach is that the phone needs to be plugged into the debugging environment during testing; however, 
+this didn't come up as a concern from our test users. Listening for the commands was still done on the phone, 
+and the Astrid application was modified to receive a voice command upon a button press, look-up the closest matching voice command 
+that it has in its database, and send the necessary UI interactions to the test suite using IPC. Our system for receiving commands used 
+a word overlap index to find the closest command in its database. Just like the demonstration interface, the user would press a button 
+and then utter the voice command they want to use. The phone then echoes the command that it thinks it received and carries out the 
+recorded UI interactions. 
+ 
 \begin{enumerate}
 \item Screen reader
+Android has a built-in screen reader tool called TalkBack that can be turned on as a system-wide setting and allows the user to get 
+voice feedback from their interactions by traversing through UI elements using the d-pad on their phones (if available on the model). 
+An alternative to TalkBack is a third-party open source tool called Spiel that allows per-application customization through JavaScript. 
+Our system did not use either of these packages since they needed the phone's accessibility mode to be turned on, which 
 \item Voice keyboard
 \item Natural language processing for command interpretation
 \end{enumerate}
@@ -149,7 +160,10 @@ When recording UI events, we capture low-level touches and key preses.
 \subsection{Discussion}
 
 \section{Conclusion and Future Work}
-
+Potential improvements: Either infer more about UI elements (not just 
+x/y coordinates, but inferring what elements the user is interacting with)
+or record the context/screen the user was at during demonstration and only allow 
+that command to be dispatched from the same context.
 
 
 \end{document}
