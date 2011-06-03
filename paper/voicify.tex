@@ -96,9 +96,15 @@ recorded UI interactions.
 Android has a built-in screen reader tool called TalkBack that can be turned on as a system-wide setting and allows the user to get 
 voice feedback from their interactions by traversing through UI elements using the d-pad on their phones (if available on the model). 
 An alternative to TalkBack is a third-party open source tool called Spiel that allows per-application customization through JavaScript. 
-Our system did not use either of these packages since they needed the phone's accessibility mode to be turned on, which 
+Our system did not use either of these packages since they needed the phone's accessibility mode to be turned on, which intervened with 
+custom accessibility objects that our code uses. Instead, we implemented a replacement that dispatches d-pad commands to traverse 
+through visible UI elements, and simulates accessibility events to gather readable content at each step. This worked well for a uniform 
+screen like the list of to-do tasks, but got in the way of user interaction in more complicated screens due to the simulated traversal. 
+Therefore we only used the screen reader to read off the list of tasks.
+
 \item Voice keyboard
-\item Natural langage processing for command interpretation
+Upon 
+\item Natural language processing for command interpretation
 \end{enumerate}
 
 \section{Experimental Evaluation}
