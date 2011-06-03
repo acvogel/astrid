@@ -5,6 +5,7 @@
 
 \usepackage{times}
 \usepackage{uist}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -38,7 +39,7 @@
 \author{
 \parbox[t]{9cm}{\centering
 	     {\em Adam Vogel}\\
-     Computer Science Deparment\\
+     Computer Science Department\\
              Stanford University \\
 	     av@cs.stanford.edu}
 \parbox[t]{9cm}{\centering
@@ -55,7 +56,7 @@
 %applications lack speech support. 
 We present \emph{Voicify}, a framework for voice programming by 
 demonstration which enables users to build their own speech interfaces.
-The user creates their own voice interface by demosntrating a voice command with the corresponding
+The user creates their own voice interface by demonstrating a voice command with the corresponding
 actions to take on the phone. The phone can then be put in a hands-free mode, where it
 responds to previously programmed voice commands. 
 Transparency is a key issue, and we discuss the development of a voice-only keyboard for
@@ -109,13 +110,13 @@ The UI design of Android still makes capturing UI events across a whole applicat
 Within each activity, the interface elements, called \emph{views}, are arranged in a tree structure. When the user
 touches the screen, the UI event is dispatched to the lowest element in the view tree which spans that portion of the 
 screen. It is then passed up the tree, until a UI element consumes it. To capture these touch events,
-we programatically traverse the view tree and insert an invisible UI layer at each node. The UI layer
+we programmatically traverse the view tree and insert an invisible UI layer at each node. The UI layer
 simply captures the UI interactions which pass through it.
 
 Furthermore, some UI widgets like buttons and dialog boxes consume touch events without passing them along
 to the activity in which they reside. Complicating matters, these boxes are required to be leaves
 of the view tree, which doesn't allow for our trick of inserting invisible layers. To deal with these issues
-we overrid the UI widget classes to capture the interactions. This required changing the UI definitions for
+we overrode the UI widget classes to capture the interactions. This required changing the UI definitions for
 each of the screens to use our modified versions. This challenges our goal of making Voicify applicable to
 every application but is a necessary hack for this prototype.
 
@@ -124,11 +125,43 @@ screens in an application. This makes it difficult to share UI events across act
 happens when demonstrating some commands. To overcome this we implemented a \emph{demonstration service} which runs in the background
 of the application and aggregates UI interactions across activities.
 
-When recording UI events, we capture low-level touches and key preses.
+When recording UI events, we capture low-level touches. The information in touch events includes the (X,Y) coordinate
+on the screen, the pressure and size, and lastly whether it is initial contact, a dragging motion, or a release.
+Our various capturing shims transmit these events to the demonstration service, which associates them with the
+correct command. Recording demonstrations at this low-level is the source of some errors. For instance, imagine
+the user demonstrates how to click the 'save' button on a screen with a list. If the user later adds elements to the
+list and tries to play back the 'save' command, the button might have moved. This is a large source of error in 
+our experiments.
 
-%TODO: figure for the demonstration service?
+
+%TODO: figure for the demonstration service? like boxes and arrows and shit.
 
 \subsection{Demonstration Interface}
+We now describe the user demonstration interface. We modified the hard camera button on the phone to serve as the 
+``Voicify button''. After loading the Astrid application, the user clicks the camera button. This pops up a small
+notification which says ``Demonstration'' (Figure \ref{fig:interface}). From here the user says the command that they would like to record,
+for instance ``create a new task''.
+After running Google-powered speech recognition, the interface speaks back to the user what it thinks the command
+is, such as ``recording command 'create a new task' ''. The phone now is in capture mode, where all subsequent
+UI events are associated with this command. After executing the desired sequence of interactions, the user
+again presses the camera button to signal the end of demonstration, which triggers a small popup window
+to acknowledge the demonstration.
+
+We use the hard camera-button to solve the \emph{clutching problem}, which is how to determine when a trial has ended.
+We also experimented with a soft button in a context menu within the application, but users found it cumbersome
+to locate, whereas the hard camera button is always there and able to be pressed by feeling alone.
+An even better demonstration interface would be to always capture the audio and only record when the 
+user says a key phrase. However, the current state of speech recognition is not good enough to enable this.
+
+
+\begin{figure}[t]
+\label{fig:interface}
+\begin{center}
+\includegraphics[scale=0.3]{fig/screenshot.png}
+\end{center}
+\caption{When the user presses the camera button a small UI notification appears to let them know to being demonstration.}
+\end{figure}
+
 
 \subsection{Playback Interface}
 The Android operating system employs a sandbox-based security framework that prevents any interaction between applications. 
