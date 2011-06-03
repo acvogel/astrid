@@ -55,7 +55,7 @@
 %applications lack speech support. 
 We present \emph{Voicify}, a framework for voice programming by 
 demonstration which enables users to build their own speech interfaces.
-The user creates their own voice interface by demosntrating a voice command with the corresponding
+The user creates their own voice interface by demonstrating a voice command with the corresponding
 actions to take on the phone. The phone can then be put in a hands-free mode, where it
 responds to previously programmed voice commands. 
 Transparency is a key issue, and we discuss the development of a voice-only keyboard for
@@ -109,13 +109,13 @@ The UI design of Android still makes capturing UI events across a whole applicat
 Within each activity, the interface elements, called \emph{views}, are arranged in a tree structure. When the user
 touches the screen, the UI event is dispatched to the lowest element in the view tree which spans that portion of the 
 screen. It is then passed up the tree, until a UI element consumes it. To capture these touch events,
-we programatically traverse the view tree and insert an invisible UI layer at each node. The UI layer
+we programmatically traverse the view tree and insert an invisible UI layer at each node. The UI layer
 simply captures the UI interactions which pass through it.
 
 Furthermore, some UI widgets like buttons and dialog boxes consume touch events without passing them along
 to the activity in which they reside. Complicating matters, these boxes are required to be leaves
 of the view tree, which doesn't allow for our trick of inserting invisible layers. To deal with these issues
-we overrid the UI widget classes to capture the interactions. This required changing the UI definitions for
+we overrode the UI widget classes to capture the interactions. This required changing the UI definitions for
 each of the screens to use our modified versions. This challenges our goal of making Voicify applicable to
 every application but is a necessary hack for this prototype.
 
@@ -154,7 +154,7 @@ screen like the list of to-do tasks, but got in the way of user interaction in m
 Therefore we only used the screen reader to read off the list of tasks.
 
 \item Voice keyboard
-Upon 
+We also wanted our demonstrated 
 
 \item Natural language processing for command interpretation
 \end{enumerate}
