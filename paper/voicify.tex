@@ -38,12 +38,12 @@
 
 \author{
 \parbox[t]{9cm}{\centering
-	     {\em Adam Vogel}\\
+	     { Adam Vogel}\\
      Computer Science Department\\
              Stanford University \\
 	     av@cs.stanford.edu}
 \parbox[t]{9cm}{\centering
-	     {\em Arda Kara}\\
+	     { Arda Kara}\\
 	     Computer Science Department\\
        Stanford University\\
 	     ardakara@stanford.edu}
@@ -93,6 +93,8 @@ the design and implementation of Voicify, and discusses the user study.
 
 \section{Related Work}
 Some other people did this shit too!
+SRI, interpreting natural language instructions, programming by demonstration (search query), 
+speech acts paper, ummm.
 
 \section{Programming by Demonstration}
 The Voicify framework requires three main components: the ability to capture low-level UI events, 
@@ -155,11 +157,11 @@ user says a key phrase. However, the current state of speech recognition is not 
 
 
 \begin{figure}[t]
-\label{fig:interface}
 \begin{center}
-\includegraphics[scale=0.3]{fig/screenshot.png}
+\includegraphics[scale=0.3]{fig/screenshot-cropped.png}
 \end{center}
 \caption{When the user presses the camera button a small UI notification appears to let them know to being demonstration.}
+\label{fig:interface}
 \end{figure}
 
 
@@ -193,9 +195,54 @@ We also wanted our demonstrated
 \end{enumerate}
 
 \section{Experimental Evaluation}
+We conducted a lab user study two questions:
+\begin{enumerate}
+\item Do users find our demonstration interface natural to use?
+\item Are voice interfaces created by demonstration capable of achieving the same features as touch interfaces?
+\end{enumerate}
+
 \subsection{Experimental Design}
+We recruited 10 members of Stanford University to participate in a user study. We focused on a representative set of 
+seven tasks in the Astrid to-do app:
+\begin{enumerate}
+\item Create a new task
+\item Add a title
+\item Set the task priority to high
+\item Add a note
+\item Toggle the reminder
+\item Delete a task
+\item Save a task
+\end{enumerate}
+The participants began by experimenting with the Astrid application for a few minutes to familiarize themselves with its layout.
+From here the participants were given the list of commands, written out in the above form, and asked to complete them using
+the touch interface. This served two purposes: to provide a baseline of the amount of time the tasks take, and to further
+familiarize the users with the parts of the interface they will be demonstrating. Here we recorded the UI interactions
+of the user to verify task completeness and recorded the amount of time it took.
+
+Next the experimenters explained the demonstration interface and programmed a sample command to show the user how it works.
+The users were then instructed to program voice commands to complete the tasks. The printed instructions were
+still available to users, but surprisingly few directly read the printed instructions. When speech recognition errors
+occurred, some users re-recorded the command, and others simply moved on. The quality of speech recognition and demonstration
+in this phase is critical for creating a good interface. However, not all errors are fatal. Sometimes the transcription
+errors are systematic, meaning that if the user says the same thing at playback the command will still work, despite
+the fact that the speech is misinterpreted.
+
+After completing the demonstration phase, the phone was put into playback mode by starting the UI test environment
+on the connected laptop. The users then did the seven tasks once again, and the success of each completing
+each step was recorded. Users were instructed that if they could not complete a task after several attempts
+to continue to the next one.
+
 
 \subsection{Results}
+Figure \ref{fig:results} shows the amount of time users spent in each mode.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[scale=0.4]{fig/results.jpg}
+\end{center}
+\caption{The amount of time each of the seven tasks took for each user interface. The speech interfaces are significantly slower than the touch interface.}
+\label{fig:results}
+\end{figure}
 
 \subsection{Discussion}
 
