@@ -46,7 +46,7 @@
 	     {\em Arda Kara}\\
 	     Computer Science Department\\
        Stanford University\\
-	     ardakara@stanford.edu}
+	     ardakara@cs.stanford.edu}
 }
 
 \maketitle
@@ -187,13 +187,33 @@ screen like the list of to-do tasks, but got in the way of user interaction in m
 Therefore we only used the screen reader to read off the list of tasks.
 
 \item Voice keyboard
-We also wanted our demonstrated 
+We also wanted the user demonstrated voice interface to be able to accept a different argument at runtime for textfields and such. For 
+example, if the user demonstrated a voice command for creating a new to-do task, the title for the task should be customizable during
+playback. To achieve this, we implemented a voice keyboard for Android that is available across applications. 
+Once it's selected as the system-wide keyboard, the phone asks you to speak anytime a field that needs the keyboard is selected. 
+This meant that, any demonstration that ends with a text input field selected would know to prompt the user to speak again after 
+the voice command and enter the transcribed text into the text field. Obviously, a limitation of this is that it did not allow 
+demonstrations to accept input in the middle. Any demonstration that accepts input needed to do so as the very last step.
 
 \item Natural language processing for command interpretation
+The text-to-speech and speech-to-text engines that we used are made available in Android by Google. The speech-to-text transcriber 
+is a network solution that sends the voice command files to Google's servers and returns the best transcription guess for the 
+audio. This system often gave very accurate results on one of our phones and did not perform as well on the other. It is worth noting 
+that the phone with worse speech recognition might have introduced a lower than expected task completion success rate.  
+
 \end{enumerate}
 
 \section{Experimental Evaluation}
 \subsection{Experimental Design}
+To test the efficacy of Voicify, we ran a study with 10 subjects. They were first asked to 
+familiarize themselves with the phone and the Astrid application. They, then, were given a list of tasks to carry out and 
+asked to first do them by using the conventional touch interface, then record voice commands for these tasks using our 
+demonstration interface, and finally carry out the tasks using the resulting voice interface. The list included actions that are typically 
+carried out in a to-do application, such as creating a task, editing the title and the importance of the task, adding notes, and checking 
+off items from the list. We measured the time it takes the subjects to complete the list 
+using each interface, and their task completion success rates using the Voicify interface. 
+
+
 
 \subsection{Results}
 
