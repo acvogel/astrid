@@ -80,7 +80,7 @@ To address this problem, we introduce \emph{Voicify}\footnote{The Voicify source
 through end-user demonstration. Voicify allows a user to create voice commands for Android
 applications through a ``tell and show'' interface: the user first \emph{tells} the phone what 
 to do in natural language and then \emph{shows} the phone how to interpret this command.
-Once the user has demonstrated commands, the phone can execute commands in a playback mode.
+Once the user has demonstrated commands, the phone can execute commands in playback mode.
 
 We further explore the efficacy of user demonstration and the usability of the resulting
 interface by conducting a user study.  We \emph{voicified} a popular open-source Android to-do list
@@ -88,7 +88,7 @@ application called \emph{Astrid} \cite{astrid}. Using this version of Astrid, we
 competence of the demonstration and playback interfaces when compared to the traditional touch
 interface. Our results show that the voicified interfaces are usable, with a 60\% command interpretation
 success rate, but still fall below the level needed for wide usage. Our user study revealed
-several weaknesses in the demonstration interaction which we implemented.
+several weaknesses in the demonstration interaction that we implemented.
 
 
 The remainder of the paper summarizes the large body of work on programming by demonstration, details
@@ -123,8 +123,8 @@ treating uncertain parts of demonstrations as missing values.
 Programming by demonstration has been studied in the user interface community as well.
 Bocionek and Sassin \cite{Bocionek:1993:DLA:865219} improved room reservation systems
 by observing the emails a receptionist received and the corresponding actions
-he or she took to reserve a room. They specifically deal with the natural language problem,
-and utilize a thesaurus to improve coverage.
+he or she took to reserve a room. They specifically dealt with the natural language problem,
+and utilized a thesaurus to improve coverage.
 
 In the natural language processing community there is an interest in learning to 
 follow directions. Recent work which is applicable here is Branavan et al. 
@@ -149,9 +149,10 @@ an interface for recording demonstrations, and lastly the ability to playback co
 
 \subsection{UI Capture}
 To record a command demonstration, Voicify requires access to the user interface actions that a user engages in.
-Security restrictions on the Android platform make it impossible for a 3rd party application to capture 
-touch and key events as this would enable malicious key loggers to steal sensitive information. 
-The Android Accessibility Team \cite{androidaccessibility} confirmed that this is impossible to do without modifying the operating system.
+Security restrictions on the Android platform make it impossible for a 3rd party application without system privileges to capture 
+touch and key events from a different application as this would enable malicious key loggers to steal sensitive information. 
+The Android Accessibility Team \cite{androidaccessibility} confirmed that this is impossible to do without modifying the operating
+system and issuing a system certificate.
 To circumvent this problem, we chose an open-source application as a prototype, which allowed us to modify
 the program source itself, thus capturing UI events within the application.
 
@@ -198,37 +199,35 @@ our experiments.}
 \subsection{Demonstration Interface}
 We now describe the user demonstration interface. We modified the hard camera button on the phone to serve as the 
 ``Voicify button''. After loading the Astrid application, the user presses the camera button. This pops up a small
-notification which says ``Demonstration'' (see Figure \ref{fig:interface}). From here the user says the command that they would like to record,
+notification which says ``Demonstrate'' (see Figure \ref{fig:interface}). From here the user says the command that they would like to record,
 for instance ``create a new task''.
 After running Google-powered speech recognition, the interface speaks back to the user what it thinks the command
-is, such as ``recording command 'create a new task' ''. The phone now is in capture mode, where all subsequent
-UI events are associated with this command. After executing the desired sequence of interactions, the user
-again presses the camera button to signal the end of demonstration, which triggers a small pop-up window
+is, such as ``recording command 'create a new task' ''. The phone is now in capture mode, where all subsequent
+UI events are associated with this command. After executing the desired sequence of interactions, the user presses the camera button again 
+to signal the end of demonstration, which triggers a small pop-up window
 to acknowledge the demonstration.
 
 We use the hard camera-button to solve the \emph{clutching problem}, which is how to determine when a trial has ended.
 We also experimented with a soft button in a context menu within the application, but users found it cumbersome
 to locate, whereas the hard camera button is able to be pressed by feeling alone.
-A better demonstration interface would be to always capture the audio and only record when the 
+A better demonstration interface would be to always capture the audio and only record when the
 user says a key phrase. However, the current state of speech recognition is not good enough to enable this.
 
 
 
 
 \subsection{Playback Interface}
-The Android operating system employs a sandbox-based security framework that prevents any interaction between applications. 
-Each application has its own virtual machine, which makes it more difficult to implement a system-wide voice control interface without modifying the OS.
-Our workaround was to use the UI testing features of the built-in unit testing tools that come with the Android SDK.
+The Android operating system employs a sandbox-based security framework that prevents any interaction between applications.
+Each application has its own virtual machine, which makes it difficult to implement a system-wide voice control interface without modifying the OS.
+Our workaround was to use the UI testing features of the Android SDK unit testing environment.
 One downside of this approach is that the phone needs to be plugged into the debugging environment during testing; however, 
-this didn't come up as a concern from our test users. Listening for the commands was still done on the phone, 
-and the Astrid application was modified to receive a voice command upon a button press, look-up the closest matching voice command 
-that it has in its database, and send the necessary UI interactions to the test suite using IPC. Our system for receiving commands used 
-a word overlap index to find the closest command in its database. Just like the demonstration interface, the user would press a button 
-and then utter the voice command they want to use. The phone then echoes the command that it thinks it received and carries out the 
-recorded UI interactions. 
+this didn't come up as a concern from our test users. The Astrid application was modified to receive a voice command upon a button press, look-up the closest matching voice command that it has in its database, and send the necessary UI interactions to the test suite using IPC.
+Our system for receiving commands used a word overlap index to find the closest command in its database.
+Just like the demonstration interface, the user would press a button and then utter
+the voice command they want to use. The phone then echoes the command that it thinks it received and carries out the UI interactions that were
+previously demonstrated. 
  
-
-When using Voicify in an eyes-free environment, the application needs to read information the user in addition to interpreting commands.
+When using Voicify in an eyes-free environment, the application needs to read information to the user in addition to interpreting commands.
 Android has a built-in screen reader tool called TalkBack that can be turned on as a system-wide setting and allows the user to get 
 voice feedback from their interactions by traversing through UI elements using the d-pad on their phones (if available on the model). 
 %An alternative to TalkBack is a third-party open source tool called Spiel that allows per-application customization through JavaScript. 
@@ -241,7 +240,7 @@ Therefore we only used the screen reader to read off the list of tasks.
 We also wanted the voicified interface to be able to accept new input for text fields. For 
 example, if the user demonstrated a voice command for creating a new to-do task, the title for the task should be customizable during
 playback. To achieve this, we implemented a voice keyboard for Android that is available across applications. 
-Once the voice keyboard is selected as the system-wide keyboard, the phone asks you to speak anytime a field that needs the keyboard is selected. 
+Once the voice keyboard is selected as the system-wide keyboard, the phone asks you to speak, instead of displaying the keyboard, anytime an editable field is selected. 
 This meant that any demonstration that ends with a text input field selected would know to prompt the user to speak again after 
 the voice command and enter the transcribed text into the text field. Obviously, a limitation of this is that it did not allow 
 demonstrations to accept input in between touch commands. Any demonstration that accepts input needed to do so as the very last step, which
@@ -314,7 +313,7 @@ to continue to the next one.
 
 Figure \ref{fig:results} shows the amount of time users spent in each mode. As expected, users completed the tasks in less time using the touch interface.
 The demonstration period took the longest, as users had to both state their actions and execute them in the UI. Playback took slightly less time due to the
-phone automatically executing touch actions. We found a relatively wide range of the time spent by participants. This can be attributed to systematic
+phone automatically executing touch actions. We found a relatively wide range of time spent by participants. This can be attributed to systematic
 differences in speech recognition quality across users.
 
 In playback mode, users successfully completed tasks 58.6\% of the time, with a standard deviation of 23.6\%. This is a relatively high variation across
@@ -324,9 +323,9 @@ users. Several users were able to complete all but one of the tasks successfully
 Errors in playback mode can be
 grouped into several classes:
 \begin{itemize}
-\item Speech recognition errors. Sometimes the system mis-interprets the command given.
-\item Demonstration mistakes. Some users incorrectly demonstrated how to carry out commands.
-\item Cascading errors. When the system makes errors on parts of a larger task, the user can become uncertain of the state of the application, causing command to be played incorrectly.
+\item Speech recognition errors: sometimes the system mis-interprets the command given.
+\item Demonstration mistakes: some users incorrectly demonstrated how to carry out commands.
+\item Cascading errors: the system makes an error in the middle of a larger task. The user can become uncertain of the state of the application, causing an incorrect command to be played.
 \end{itemize}
 The errors in speech recognition are difficult to deal with. By echoing the user command both at demonstration and playback time we hoped to provide \emph{transparency} to the user.
 However, even if users are aware that the system makes an interpretation error, it can be difficult to recover from without appropriate commands. Some users found that the
@@ -353,7 +352,7 @@ Our study showed that speech recognition quality is critical to good performance
 existing technology is almost good enough.
 Despite the fact that the speech interfaces learned through demonstration are not yet at the
 level of their traditional touch counterparts, this work shows a promising route
-towards providing wide-coverage voice interfaces to mobile applications which currently lack them.
+towards providing wide-coverage voice interfaces to mobile applications that currently lack them.
 
 \bibliography{voicify}
 
