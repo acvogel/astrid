@@ -26,7 +26,7 @@
         <item name="android:textSize">20dip</item>
     </style>
     
-     <style name="DialogTitle" parent="android:WindowTitle">
+    <style name="DialogTitle" parent="android:TextAppearance.WindowTitle">
         <item name="android:background">#323331</item>
         <item name="android:layout_height">26dip</item>
         <item name="android:textAppearance">@style/DialogTitleText</item>

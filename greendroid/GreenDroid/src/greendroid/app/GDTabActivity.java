@@ -16,8 +16,8 @@
 package greendroid.app;
 
 import greendroid.util.Config;
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBar.OnActionBarListener;
+import greendroid.widget.GreenActionBar;
+import greendroid.widget.GreenActionBar.OnActionBarListener;
 import greendroid.widget.ActionBarHost;
 import greendroid.widget.ActionBarItem;
 import android.app.TabActivity;
@@ -35,7 +35,7 @@ import com.cyrilmottier.android.greendroid.R;
 
 /**
  * An equivalent to a TabActivity that manages fancy tabs and an ActionBar
- * 
+ *
  * @author Cyril Mottier
  */
 public class GDTabActivity extends TabActivity implements ActionBarActivity {
@@ -109,7 +109,7 @@ public class GDTabActivity extends TabActivity implements ActionBarActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        getActionBar().setTitle(title);
+        getGreenActionBar().setTitle(title);
     }
 
     @Override
@@ -117,16 +117,17 @@ public class GDTabActivity extends TabActivity implements ActionBarActivity {
         setTitle(getString(titleId));
     }
 
-    public ActionBar getActionBar() {
+    @Override
+    public GreenActionBar getGreenActionBar() {
         return mActionBarHost.getActionBar();
     }
 
     public void addActionBarItem(ActionBarItem item) {
-        getActionBar().addItem(item);
+        getGreenActionBar().addItem(item);
     }
 
     public void addActionBarItem(ActionBarItem.Type actionBarItemType) {
-        getActionBar().addItem(actionBarItemType);
+        getGreenActionBar().addItem(actionBarItemType);
     }
 
     public FrameLayout getContentView() {
@@ -137,7 +138,7 @@ public class GDTabActivity extends TabActivity implements ActionBarActivity {
         return false;
     }
 
-    private OnActionBarListener mActionBarListener = new OnActionBarListener() {
+    private final OnActionBarListener mActionBarListener = new OnActionBarListener() {
         public void onActionBarItemClicked(int position) {
             if (position == OnActionBarListener.HOME_ITEM) {
 
@@ -152,7 +153,7 @@ public class GDTabActivity extends TabActivity implements ActionBarActivity {
                 }
 
             } else {
-                if (!onHandleActionBarItemClick(getActionBar().getItem(position), position)) {
+                if (!onHandleActionBarItemClick(getGreenActionBar().getItem(position), position)) {
                     if (Config.GD_WARNING_LOGS_ENABLED) {
                         Log.w(LOG_TAG, "Click on item at position " + position + " dropped down to the floor");
                     }

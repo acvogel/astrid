@@ -82,8 +82,9 @@ public class Calendars {
 	    Context context = ContextManager.getContext();
 		ContentResolver cr = context.getContentResolver();
 		Resources r = context.getResources();
-		Cursor c = cr.query(getCalendarContentUri(CALENDAR_CONTENT_CALENDARS), CALENDARS_PROJECTION,
-				CALENDARS_WHERE, null, CALENDARS_SORT);
+		Cursor c = null;
+		    /*cr.query(getCalendarContentUri(CALENDAR_CONTENT_CALENDARS), CALENDARS_PROJECTION,
+				CALENDARS_WHERE, null, CALENDARS_SORT); */
 		try {
     		// Fetch the current setting. Invalid calendar id will
     		// be changed to default value.

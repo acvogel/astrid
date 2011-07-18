@@ -16,9 +16,9 @@
 package greendroid.app;
 
 import greendroid.util.Config;
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBar.OnActionBarListener;
-import greendroid.widget.ActionBar.Type;
+import greendroid.widget.GreenActionBar;
+import greendroid.widget.GreenActionBar.OnActionBarListener;
+import greendroid.widget.GreenActionBar.Type;
 import greendroid.widget.ActionBarHost;
 import greendroid.widget.ActionBarItem;
 import android.app.Activity;
@@ -37,7 +37,7 @@ import com.cyrilmottier.android.greendroid.R;
 /**
  * <p>
  * An {@link GDActivity} is a regular Activity that always hosts an
- * {@link ActionBar}. It is extremely simple to use as you have nothing
+ * {@link GreenActionBar}. It is extremely simple to use as you have nothing
  * particular to do. Indeed, the ActionBar is automatically added to your own
  * layout when using the {@link #getContentView()} method. You can also use one
  * of the setActionBarContentView utility methods. As a result, a basic
@@ -102,7 +102,7 @@ public class GDActivity extends Activity implements ActionBarActivity {
         mDefaultConstructorUsed = true;
     }
 
-    public GDActivity(ActionBar.Type actionBarType) {
+    public GDActivity(GreenActionBar.Type actionBarType) {
         super();
         mActionBarType = actionBarType;
     }
@@ -133,7 +133,7 @@ public class GDActivity extends Activity implements ActionBarActivity {
         ensureLayout();
     }
 
-    public ActionBar.Type getActionBarType() {
+    public GreenActionBar.Type getActionBarType() {
         return mActionBarType;
     }
 
@@ -207,7 +207,7 @@ public class GDActivity extends Activity implements ActionBarActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        getActionBar().setTitle(title);
+        getGreenActionBar().setTitle(title);
     }
 
     @Override
@@ -215,17 +215,17 @@ public class GDActivity extends Activity implements ActionBarActivity {
         setTitle(getString(titleId));
     }
 
-    public ActionBar getActionBar() {
+    public GreenActionBar getGreenActionBar() {
         ensureLayout();
         return mActionBarHost.getActionBar();
     }
 
     public void addActionBarItem(ActionBarItem item) {
-        getActionBar().addItem(item);
+        getGreenActionBar().addItem(item);
     }
 
     public void addActionBarItem(ActionBarItem.Type actionBarItemType) {
-        getActionBar().addItem(actionBarItemType);
+        getGreenActionBar().addItem(actionBarItemType);
     }
 
     public FrameLayout getContentView() {
@@ -278,7 +278,7 @@ public class GDActivity extends Activity implements ActionBarActivity {
                 }
 
             } else {
-                if (!onHandleActionBarItemClick(getActionBar().getItem(position), position)) {
+                if (!onHandleActionBarItemClick(getGreenActionBar().getItem(position), position)) {
                     if (Config.GD_WARNING_LOGS_ENABLED) {
                         Log.w(LOG_TAG, "Click on item at position " + position + " dropped down to the floor");
                     }

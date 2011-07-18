@@ -62,7 +62,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
                 mBinder.transact(DemonstrationService.TEST_EVENT_CODE, null, reply, 0);
             }
             catch (Exception e){
-                System.out.println("way to fuck up");
+                System.out.println("way to screw up");
             }
 
             List<MotionEvent> evList = new ArrayList<MotionEvent>();
@@ -76,6 +76,7 @@ public class UI_playback extends ActivityInstrumentationTestCase2<TaskListActivi
             int parcel_size = evList.size();
             for (int i = 0; i < parcel_size; i++){
                 MotionEvent currentEvent = evList.get(i);
+                System.out.println("Playback event x = " + currentEvent.getX() + " y = " + currentEvent.getY());
                 currentEvent.offsetLocation(xOffset, yOffset);
                 inst.sendPointerSync(currentEvent);
                 long waitDuration = currentEvent.getEventTime()-lastEventTime;

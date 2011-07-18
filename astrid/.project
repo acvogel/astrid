@@ -3,6 +3,8 @@
 	<name>astrid</name>
 	<comment></comment>
 	<projects>
+		<project>astridApi</project>
+		<project>facebook</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

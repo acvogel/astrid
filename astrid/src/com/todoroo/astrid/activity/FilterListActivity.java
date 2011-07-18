@@ -3,20 +3,31 @@
  */
 package com.todoroo.astrid.activity;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.PendingIntent.CanceledException;
 import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.RemoteException;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -48,26 +59,11 @@ import com.todoroo.astrid.api.FilterWithCustomIntent;
 import com.todoroo.astrid.api.IntentFilter;
 import com.todoroo.astrid.core.SearchFilter;
 import com.todoroo.astrid.data.Task;
+import com.todoroo.astrid.demonstration.AccessibilityShim;
+import com.todoroo.astrid.demonstration.DemonstrationService;
 import com.todoroo.astrid.service.StartupService;
 import com.todoroo.astrid.service.StatisticsService;
 import com.todoroo.astrid.service.ThemeService;
-
-import com.todoroo.astrid.demonstration.*;
-import android.content.ServiceConnection;
-import android.app.IntentService;
-import android.content.Intent;
-import android.content.ComponentName;
-import android.os.Binder;
-import android.os.IBinder;
-import android.util.Log;
-import android.content.Context;
-import android.speech.*;
-import android.speech.tts.*;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Activity that displays a user's task lists and allows users
@@ -102,12 +98,12 @@ public class FilterListActivity extends ExpandableListActivity {
     private DemonstrationService mService;
     private DemonstrationService.DemonstrationBinder mBinder;
     private boolean mBound = false; // whether we are bound to a demonstration service
-    private String LOG_STRING = "FilterListActivity";
+    private final String LOG_STRING = "FilterListActivity";
     private SpeechRecognizer mSpeechRecognizer = null;
     private SpeechListener mSpeechListener = null;
 
     /** Defines callbacks for demonstration service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -130,35 +126,36 @@ public class FilterListActivity extends ExpandableListActivity {
       AccessibilityShim.attachToActivity(this, mBinder);
     }
 
+    @Override
     public boolean  dispatchKeyEvent(KeyEvent ev) {
       int code = ev.getKeyCode();
       int action = ev.getAction();
-      if(code == 80 && action == 1) {
-        Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
-            Parcel reply = Parcel.obtain();
-            boolean record = false;
-            try {
-              mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
-              record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
-            } catch (RemoteException e) {
-              Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
-            }
-            if(!record) {
-               Context context = getApplicationContext();
-               CharSequence text = "Record a new demonstration";
-               int duration = Toast.LENGTH_SHORT;
-               
-               Toast toast = Toast.makeText(context, text, duration);
-               toast.show();
-            } else {
-               Context context = getApplicationContext();
-               CharSequence text = "Demonstration saved";
-               int duration = Toast.LENGTH_SHORT;
-               
-               Toast toast = Toast.makeText(context, text, duration);
-               toast.show();
-            }
-            onRecord(record);
+
+      if(code == 24 && action == 1) {   // volume up key
+        Parcel reply = Parcel.obtain();
+        boolean record = false;
+        try {
+          mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
+          record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
+        } catch (RemoteException e) {
+          Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
+        }
+        if(!record) {
+           Context context = getApplicationContext();
+           CharSequence text = "Record a new demonstration";
+           int duration = Toast.LENGTH_SHORT;
+
+           Toast toast = Toast.makeText(context, text, duration);
+           toast.show();
+        } else {
+           Context context = getApplicationContext();
+           CharSequence text = "Demonstration saved";
+           int duration = Toast.LENGTH_SHORT;
+
+           Toast toast = Toast.makeText(context, text, duration);
+           toast.show();
+        }
+        onRecord(record);
         super.dispatchKeyEvent(ev);
         return true;
       }
@@ -170,7 +167,7 @@ public class FilterListActivity extends ExpandableListActivity {
       if(!start) {
           //mTextView.setText("making it happen");
           //RecognizerIntent recognizerIntent = new RecognizerIntent();
-          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+          Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
           intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
           intent.putExtra("calling_package","com.todoroo.astrid.activity.FilterListActivity");
@@ -217,7 +214,7 @@ public class FilterListActivity extends ExpandableListActivity {
         } catch(RemoteException e) {
           Log.e(LOG_STRING, "Error transacting with demonstration service: " + e.toString());
         }
-      } 
+      }
       public void onRmsChanged(float rmsdB) {
       }
     }
@@ -253,7 +250,7 @@ public class FilterListActivity extends ExpandableListActivity {
           Log.e(LOG_STRING, "Success of binding to service: " + success);
         }
 
-        // set up speech 
+        // set up speech
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this.getApplicationContext());
         mSpeechListener = new SpeechListener();
         mSpeechRecognizer.setRecognitionListener(mSpeechListener);

@@ -18,29 +18,33 @@
 //package com.android.example.spinner;
 package com.todoroo.astrid.demonstration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import android.app.Instrumentation;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Binder;
-import android.os.IBinder;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.os.RemoteException;
 import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-// XXX commented out for android-8 build target
-//import android.view.MotionEvent.PointerCoords;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -48,17 +52,6 @@ import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
-
-import android.util.Log;
-
-import java.io.File;
-//import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @author alanv@google.com (Alan Viverette)
@@ -156,7 +149,7 @@ public class AccessibleFrameLayout extends FrameLayout {
         if(binder == null) {
           Log.e(LOG_STRING, "Null binder in constructor");
         }
-        mBinder = binder; 
+        mBinder = binder;
 
         //unserializeDemonstration();
         //unserializeMotionEvents();
@@ -188,7 +181,7 @@ public class AccessibleFrameLayout extends FrameLayout {
       ArrayList<MotionEvent> motionEvents = new ArrayList<MotionEvent>();
       try {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        motionEventCache = (ArrayList<MotionEventCache>) ois.readObject(); 
+        motionEventCache = (ArrayList<MotionEventCache>) ois.readObject();
         for(MotionEventCache mec : motionEventCache) {
           MotionEvent ev = mec.obtain();
           motionEvents.add(ev);
@@ -226,7 +219,7 @@ public class AccessibleFrameLayout extends FrameLayout {
       } catch (Exception e) {
         Log.e(LOG_STRING, "Error opening demonstration output: " + e.toString());
       }
-    }    
+    }
 
     public void unserializeDemonstration() {
       try {
@@ -338,7 +331,7 @@ public class AccessibleFrameLayout extends FrameLayout {
             /*
             if(child instanceof ViewGroup) {
               AccessibleFrameLayout childFrame = new AccessibleFrameLayout(child.getContext());
-              childFrame.inject((ViewGroup) child); 
+              childFrame.inject((ViewGroup) child);
             }
             */
             addView(child);
@@ -391,7 +384,7 @@ public class AccessibleFrameLayout extends FrameLayout {
 
             event = MotionEvent.obtain(downTime, eventTime, action, pointers, x, y, pressure, size,
                     metaState, xPrecision, yPrecision, deviceId, edgeFlags);
-        } 
+        }
 
         // XXX commented out to get this to compile !
         /*
@@ -416,30 +409,9 @@ public class AccessibleFrameLayout extends FrameLayout {
         return event;
     }
 
-    @Override 
+    @Override
     public boolean dispatchKeyEvent(KeyEvent ev) {
       Log.i(LOG_STRING, "key event: " + ev.toString());
-      int code = ev.getKeyCode();
-      int action = ev.getAction();
-      if(code == 80 && action == 1) {
-        //Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
-        super.dispatchKeyEvent(ev);
-     //       Parcel reply = Parcel.obtain();
-     //       boolean record = false;
-     //       try {
-     //         mBinder.transact(DemonstrationService.GET_TOGGLE_CODE, null, reply, 0);
-     //         record = (Boolean) reply.readValue(Boolean.class.getClassLoader());
-     //       } catch (RemoteException e) {
-     //         Log.e(LOG_STRING, "Problems transacting with demonstration service: " + e.toString());
-     //       }
-     //       onRecord(record);
-        return true;
-      }
-
-     // I/AcessibleFrameLayout( 2081): key event: KeyEvent{action=0 code=80 repeat=0 meta=0 scancode=211 mFlags=8}
-     // I/AcessibleFrameLayout( 2081): key event: KeyEvent{action=1 code=80 repeat=0 meta=0 scancode=211 mFlags=8}
-
-      
       return super.dispatchKeyEvent(ev);
     }
 
@@ -447,7 +419,7 @@ public class AccessibleFrameLayout extends FrameLayout {
     //  if(!start) {
     //      //mTextView.setText("making it happen");
     //      //RecognizerIntent recognizerIntent = new RecognizerIntent();
-    //      Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);  
+    //      Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
     //      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
     //              RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     //      intent.putExtra("calling_package","com.todoroo.astrid.activity.FilterListActivity");
@@ -486,7 +458,7 @@ public class AccessibleFrameLayout extends FrameLayout {
         // add motionevent to parcel
         try {
           if(mBinder == null) {
-            Log.e(LOG_STRING, "Null binder!"); 
+            Log.e(LOG_STRING, "Null binder!");
           }
           mBinder.transact(DemonstrationService.MOTION_EVENT_CODE, parcel, null, IBinder.FLAG_ONEWAY);
         } catch (RemoteException e) {

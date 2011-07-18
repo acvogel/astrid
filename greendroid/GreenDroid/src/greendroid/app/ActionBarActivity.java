@@ -15,14 +15,14 @@
  */
 package greendroid.app;
 
-import greendroid.widget.ActionBar;
+import greendroid.widget.GreenActionBar;
 import greendroid.widget.ActionBarItem;
 import android.app.Activity;
 import android.app.Application;
 import android.widget.FrameLayout;
 
 /**
- * Defines all methods related to Activities embedding an {@link ActionBar}
+ * Defines all methods related to Activities embedding an {@link GreenActionBar}
  * 
  * @author Cyril Mottier
  */
@@ -47,14 +47,14 @@ public interface ActionBarActivity {
 
     /**
      * Returns the content view. Please note the content view is not the entire
-     * view but a {@link FrameLayout} that contains everything but the {@link ActionBar}.
+     * view but a {@link FrameLayout} that contains everything but the {@link GreenActionBar}.
      * 
      * @return The content view
      */
     FrameLayout getContentView();
 
     /**
-     * Returns the {@link ActionBar}. Listening to {@link ActionBar} events
+     * Returns the {@link GreenActionBar}. Listening to {@link GreenActionBar} events
      * should be done via the
      * {@link ActionBarActivity#onHandleActionBarItemClick(ActionBarItem, int)}
      * method. Most of the time, this method don't need to be used directly.
@@ -62,9 +62,9 @@ public interface ActionBarActivity {
      * @see {@link ActionBarActivity#onHandleActionBarItemClick(ActionBarItem, int)}
      * @see {@link ActionBarActivity#addActionBarItem(ActionBarItem)}
      * @see {@link ActionBarActivity#addActionBarItem(greendroid.widget.ActionBarItem.Type)}
-     * @return The {@link ActionBar} currently displayed on screen
+     * @return The {@link GreenActionBar} currently displayed on screen
      */
-    ActionBar getActionBar();
+    GreenActionBar getGreenActionBar();
 
     /**
      * A simple utility method that casts the {@link Application} returned by
@@ -75,16 +75,16 @@ public interface ActionBarActivity {
     GDApplication getGDApplication();
 
     /**
-     * Add a new item to the {@link ActionBar}.
+     * Add a new item to the {@link GreenActionBar}.
      * 
-     * @param item The item to add to the {@link ActionBar}
+     * @param item The item to add to the {@link GreenActionBar}
      */
     void addActionBarItem(ActionBarItem item);
 
     /**
-     * Adds a new item of type <em>type</em> to the {@link ActionBar}.
+     * Adds a new item of type <em>type</em> to the {@link GreenActionBar}.
      * 
-     * @param actionBarItemType The item to add to the {@link ActionBar}
+     * @param actionBarItemType The item to add to the {@link GreenActionBar}
      */
     void addActionBarItem(ActionBarItem.Type actionBarItemType);
 

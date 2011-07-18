@@ -5,9 +5,8 @@ package com.todoroo.astrid.demonstration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import android.app.IntentService;
@@ -15,19 +14,13 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.widget.Toast;
-
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import android.speech.tts.*;
-
-
-
-
 public class DemonstrationService extends IntentService {
-  private String LOG_STRING = "DEMONSTRATION_SERVICE";
+  private final String LOG_STRING = "DEMONSTRATION_SERVICE";
   static final int MSG_SAY_HELLO = 1;
   // codes used in transact
   public static final int MOTION_EVENT_CODE = 1;
@@ -35,8 +28,8 @@ public class DemonstrationService extends IntentService {
   public static final int TRACKBALL_EVENT_CODE = 3;
   public static final int TEST_EVENT_CODE = 4;
   /** User hit the settings button to toggle demonstration. Parcel will possibly contain a String. */
-  public static final int TOGGLE_CODE = 5; 
-  public static final int GET_TOGGLE_CODE = 6; 
+  public static final int TOGGLE_CODE = 5;
+  public static final int GET_TOGGLE_CODE = 6;
   public static final int SET_DIRECTORY_CODE = 7;
   public static final int EDIT_TEXT_CODE = 8; // used when text box has gained focus
 
@@ -44,14 +37,14 @@ public class DemonstrationService extends IntentService {
 
   private Demonstration mDemonstration; // the current demonstration we are editing
   private DemonstrationDB mDemonstrationDB; // the set of all demonstrations.
-  private DemonstrationBinder mBinder;
+  private final DemonstrationBinder mBinder;
 
   /** Whether to capture UI interactions in mDemonstration. Turned off during playback. */
-  private boolean mRecord = false; 
+  private boolean mRecord = false;
 
-  /** Ready to playback a demonstration. 
+  /** Ready to playback a demonstration.
       That is we've recieved a voice command and want to dispatch it to instrumentation. */
-  private boolean mPlaybackReady = false; 
+  private boolean mPlaybackReady = false;
 
   /** Whether the instrumentation program has contact the service. */
   private boolean mTestConnected = false;
@@ -68,7 +61,7 @@ public class DemonstrationService extends IntentService {
 
 
 
-  /** 
+  /**
    * A constructor is required, and must call the super IntentService(String)
    * constructor with a name for the worker thread.
    */
@@ -78,7 +71,7 @@ public class DemonstrationService extends IntentService {
     mDemonstration = new Demonstration();
     mBinder = new DemonstrationBinder();
     mDemonstrationDB = new DemonstrationDB();
-    
+
     // do reading and writing here.
     //unserializeDemonstrationDB();
   }
@@ -108,7 +101,7 @@ public class DemonstrationService extends IntentService {
       out.close();
     } catch (Exception e) {
       Log.e(LOG_STRING, "Messed up serialization: " + e.toString());
-    }    
+    }
   }
 
   public void unserializeDemonstrationDB() {
@@ -124,7 +117,7 @@ public class DemonstrationService extends IntentService {
     } catch (Exception e) {
       Log.e(LOG_STRING, "Messed up unserialization: " + e.toString() + " " + e.getMessage());
       e.printStackTrace();
-    }    
+    }
     Log.i(LOG_STRING, "Demonstration we read: " + mDemonstrationDB.toString());
     mPlaybackReady = true; // ready to playback after we read in the demonstration.
   }
@@ -161,7 +154,7 @@ public class DemonstrationService extends IntentService {
     public DemonstrationService getService() {
       return DemonstrationService.this;
     }
-    
+
     @Override
     protected boolean onTransact (int code, Parcel data, Parcel reply, int flags) {
       switch (code) {
@@ -221,7 +214,7 @@ public class DemonstrationService extends IntentService {
           break;
         case GET_TOGGLE_CODE: // used to get whether we are currently recording a demonstration.
           reply.writeValue(mRecord);
-          break; 
+          break;
 
         case SET_DIRECTORY_CODE:
           // set the directory to read/write files to.
@@ -230,7 +223,7 @@ public class DemonstrationService extends IntentService {
             unserializeDemonstrationDB();
           }
           break;
-        
+
         case EDIT_TEXT_CODE:
           Log.i(LOG_STRING, "A text box has been edited. Now add the microphone input thing to the demonstration.");
           // basically want to make the special motion events to click the microphone.

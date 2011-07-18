@@ -55,7 +55,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -93,11 +92,10 @@ import com.todoroo.astrid.data.Metadata;
 import com.todoroo.astrid.data.Task;
 import com.todoroo.astrid.demonstration.AccessibilityShim;
 import com.todoroo.astrid.demonstration.DemonstrationService;
-import com.todoroo.astrid.demonstration.SpyImageButton;
 import com.todoroo.astrid.demonstration.SpyEditText;
+import com.todoroo.astrid.demonstration.SpyImageButton;
 import com.todoroo.astrid.helper.MetadataHelper;
 import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader;
-import com.todoroo.astrid.helper.TaskListContextMenuExtensionLoader.ContextMenuItem;
 import com.todoroo.astrid.reminders.ReminderDebugContextActions;
 import com.todoroo.astrid.service.AddOnService;
 import com.todoroo.astrid.service.AstridDependencyInjector;
@@ -234,11 +232,12 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
       AccessibilityShim.attachToActivity(this, mBinder);
     }
 
+    @Override
     public boolean  dispatchKeyEvent(KeyEvent ev) {
       int code = ev.getKeyCode();
       int action = ev.getAction();
-      if(code == 80 && action == 1) {
-        Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
+
+      if(code == 24 && action == 1) {   // volume up key
             Parcel reply = Parcel.obtain();
             boolean record = false;
             try {
@@ -251,14 +250,14 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
                Context context = getApplicationContext();
                CharSequence text = "Demonstrate";
                int duration = Toast.LENGTH_SHORT;
-               
+
                Toast toast = Toast.makeText(context, text, duration);
                toast.show();
             } else {
                Context context = getApplicationContext();
                CharSequence text = "Demonstration saved";
                int duration = Toast.LENGTH_SHORT;
-               
+
                Toast toast = Toast.makeText(context, text, duration);
                toast.show();
             }
@@ -269,7 +268,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
       return super.dispatchKeyEvent(ev);
     }
 
-    
+
     private void onRecord(boolean start) {
       if(!start) {
           //mTextView.setText("making it happen");
@@ -860,7 +859,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
         Log.i(LOG_STRING, "setUpTaskList()");
         unregisterForContextMenu(getListView());
 
-        
+
         loadTaskListContent(false);
     }
 
@@ -1002,7 +1001,7 @@ public class TaskListActivity extends ListActivity implements OnScrollListener,
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        // XXX 
+        // XXX
         //AccessibilityShim.attachToView(v, mBinder);
         Log.i(LOG_STRING, "onCreateContextMenu()");
 

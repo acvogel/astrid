@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import android.view.KeyEvent;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -51,6 +50,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -240,10 +240,12 @@ public final class TaskEditActivity extends TabActivity {
       AccessibilityShim.attachToActivity(this, mBinder);
     }
 
+    @Override
     public boolean  dispatchKeyEvent(KeyEvent ev) {
       int code = ev.getKeyCode();
       int action = ev.getAction();
-      if(code == 80 && action == 1) {
+
+      if(code == 24 && action == 1) { // volume up key
         Log.i(LOG_STRING, "CAMERA CAMERA CAMERA CAMERA" + ev.toString());
             Parcel reply = Parcel.obtain();
             boolean record = false;
@@ -257,14 +259,14 @@ public final class TaskEditActivity extends TabActivity {
                Context context = getApplicationContext();
                CharSequence text = "Demonstrate";
                int duration = Toast.LENGTH_SHORT;
-               
+
                Toast toast = Toast.makeText(context, text, duration);
                toast.show();
             } else {
                Context context = getApplicationContext();
                CharSequence text = "Demonstration saved";
                int duration = Toast.LENGTH_SHORT;
-               
+
                Toast toast = Toast.makeText(context, text, duration);
                toast.show();
             }
